@@ -33,7 +33,7 @@ body{font-family:'Noto Sans Kannada',sans-serif;background:#f0f2f5;min-height:10
 .tb-black{color:#000}.tb-black:hover{background:#f0f0f0;border-color:#000}
 .tb-color{width:28px;height:26px;border:1px solid #ccc;border-radius:3px;padding:1px;cursor:pointer;background:#fff;vertical-align:middle}
 .tb-cplbl{display:inline-flex;align-items:center;gap:2px;font-size:11px;color:#888;cursor:pointer}
-.editor-editable{min-height:100px;border:2px solid #ddd;border-radius:6px;padding:10px 12px;font-size:13.5px;font-family:inherit;outline:none;transition:.2s;line-height:1.75;background:#fff;flex:1}
+.editor-editable{min-height:100px;border:2px solid #ddd;border-radius:5px 5px 0 0;padding:10px 12px;font-size:13.5px;font-family:inherit;outline:none;transition:.2s;line-height:1.75;background:#fff;flex:1}
 .editor-editable:focus{border-color:#c0392b}
 .editor-editable b{font-weight:700}
 .chk-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff8e6;border:1px solid #f0d060;border-radius:6px}
@@ -63,8 +63,8 @@ body{font-family:'Noto Sans Kannada',sans-serif;background:#f0f2f5;min-height:10
 .add-btn:hover{background:#e0f0ff;border-color:#2070b9;color:#2070b9}
 .sbtn{background:#c0392b;color:#fff;border:none;padding:13px;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;width:100%}
 .sbtn:hover{background:#96281b}
-.editor-wrap{display:flex;gap:8px;align-items:stretch}
-.editor-vtb{display:flex;flex-direction:column;gap:3px;padding:5px;background:#f5f5f5;border:1px solid #ddd;border-radius:5px;flex-shrink:0}
+.editor-wrap{display:flex;flex-direction:column;gap:6px}
+.editor-vtb{display:flex;flex-direction:row;gap:3px;padding:4px 6px;background:#f5f5f5;border:1px solid #ddd;border-radius:0 0 5px 5px;border-top:0}
 .editor-vtb button{background:#fff;border:1px solid #ccc;border-radius:3px;padding:4px 8px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;transition:.1s;line-height:1.4;text-align:center;min-width:30px;touch-action:none;user-select:none}
 .editor-vtb button:active{background:#ddd;transform:scale(.95)}
 .editor-vtb .vtb-red{color:#c0392b}.editor-vtb .vtb-blue{color:#2980b9}.editor-vtb .vtb-green{color:#27ae60}.editor-vtb .vtb-black{color:#000}
@@ -143,6 +143,7 @@ function addBlock(){
     '<div class="block-pair-body">'+
     '<div class="fg"><label>ಸುದ್ದಿ ವಿಷಯ (Content) — select text, then tap <b>B</b> or a color button</label>'+
     '<div class="editor-wrap">'+
+    '<div class="editor-editable" id="ed_'+idx+'" contenteditable="true"></div>'+
     '<div class="editor-vtb">'+
     '<button type="button" class="vtb-black" onclick="fmtBold()" title="Bold"><b>B</b></button>'+
     '<button type="button" class="vtb-black" onclick="fmtColor(\'#000000\')" title="Black">A</button>'+
@@ -150,7 +151,7 @@ function addBlock(){
     '<button type="button" class="vtb-blue" onclick="fmtColor(\'#2980b9\')" title="Blue">B</button>'+
     '<button type="button" class="vtb-green" onclick="fmtColor(\'#27ae60\')" title="Green">G</button>'+
     '<input type="color" class="vtb-cp" onchange="fmtColor(this.value)" title="Custom color" value="#c0392b">'+
-    '</div><div class="editor-editable" id="ed_'+idx+'" contenteditable="true"></div></div>'+
+    '</div></div>'+
     '<input type="hidden" name="content_'+idx+'" id="hd_'+idx+'"></div>'+
     '<div class="fg"><label>&#128247; ಫೋಟೋ ಅಪ್ಲೋಡ್ (Image)</label>'+
     '<div class="img-upload-box" onclick="document.getElementById(\'img_'+idx+'\').click()">'+
@@ -194,6 +195,18 @@ function applyFormat(format,value){
   if(!lastEd||!savedRange)return;
   try{
     var rng=savedRange.cloneRange();
+    if(format==='bold'){
+      var c=rng.commonAncestorContainer;
+      if(c.nodeType===3)c=c.parentNode;
+      var bd=c.closest?c.closest('b,strong'):null;
+      if(bd){
+        var p=bd.parentNode;
+        while(bd.firstChild)p.insertBefore(bd.firstChild,bd);
+        p.removeChild(bd);
+        savedRange=null;lastEd=null;
+        return;
+      }
+    }
     var contents=rng.extractContents();
     var wrapper=document.createElement(format==='bold'?'b':'span');
     if(format==='color')wrapper.style.color=value;
