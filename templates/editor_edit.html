@@ -144,11 +144,11 @@ body{font-family:'Noto Sans Kannada',sans-serif;background:#f0f2f5;min-height:10
               <div class="fg">
                 <label>ಸುದ್ದಿ ವಿಷಯ (Content) — select text, then click <b>B</b> or a color</label>
                 <div class="editor-tb">
-                  <button type="button" class="tb-btn" onpointerdown="fmtBold()" title="Bold"><b>B</b></button>
-                  <button type="button" class="tb-btn tb-black" onpointerdown="fmtColor('#000000')" title="Black">A</button>
-                  <button type="button" class="tb-btn tb-red" onpointerdown="fmtColor('#c0392b')" title="Red">R</button>
-                  <button type="button" class="tb-btn tb-blue" onpointerdown="fmtColor('#2980b9')" title="Blue">B</button>
-                  <button type="button" class="tb-btn tb-green" onpointerdown="fmtColor('#27ae60')" title="Green">G</button>
+                  <button type="button" class="tb-btn" onclick="fmtBold()" title="Bold"><b>B</b></button>
+                  <button type="button" class="tb-btn tb-black" onclick="fmtColor('#000000')" title="Black">A</button>
+                  <button type="button" class="tb-btn tb-red" onclick="fmtColor('#c0392b')" title="Red">R</button>
+                  <button type="button" class="tb-btn tb-blue" onclick="fmtColor('#2980b9')" title="Blue">B</button>
+                  <button type="button" class="tb-btn tb-green" onclick="fmtColor('#27ae60')" title="Green">G</button>
                   <label class="tb-cplbl"><input type="color" class="tb-color" onchange="fmtColor(this.value)" title="Custom color" value="#c0392b"></label>
                 </div>
                 <div class="editor-editable" id="ed_{{ idx }}" contenteditable="true" onfocus="lastEd=this">{% if b.type=='text' %}{{ b.content | safe }}{% endif %}</div>
@@ -200,11 +200,11 @@ function addBlock(){
     '<div class="block-pair-body">'+
       '<div class="fg"><label>ಸುದ್ದಿ ವಿಷಯ (Content) — select text, then click <b>B</b> or a color</label>'+
         '<div class="editor-tb">'+
-          '<button type="button" class="tb-btn" onpointerdown="fmtBold()" title="Bold"><b>B</b></button>'+
-          '<button type="button" class="tb-btn tb-black" onpointerdown="fmtColor(\'#000000\')" title="Black">A</button>'+
-          '<button type="button" class="tb-btn tb-red" onpointerdown="fmtColor(\'#c0392b\')" title="Red">R</button>'+
-          '<button type="button" class="tb-btn tb-blue" onpointerdown="fmtColor(\'#2980b9\')" title="Blue">B</button>'+
-          '<button type="button" class="tb-btn tb-green" onpointerdown="fmtColor(\'#27ae60\')" title="Green">G</button>'+
+          '<button type="button" class="tb-btn" onclick="fmtBold()" title="Bold"><b>B</b></button>'+
+          '<button type="button" class="tb-btn tb-black" onclick="fmtColor(\'#000000\')" title="Black">A</button>'+
+          '<button type="button" class="tb-btn tb-red" onclick="fmtColor(\'#c0392b\')" title="Red">R</button>'+
+          '<button type="button" class="tb-btn tb-blue" onclick="fmtColor(\'#2980b9\')" title="Blue">B</button>'+
+          '<button type="button" class="tb-btn tb-green" onclick="fmtColor(\'#27ae60\')" title="Green">G</button>'+
           '<label class="tb-cplbl"><input type="color" class="tb-color" onchange="fmtColor(this.value)" title="Custom color" value="#c0392b"></label>'+
         '</div>'+
         '<div class="editor-editable" id="ed_'+idx+'" contenteditable="true" onfocus="lastEd=this"></div>'+
@@ -243,7 +243,23 @@ function saveSelection(){
 }
 document.addEventListener('mouseup',saveSelection);
 document.addEventListener('touchend',saveSelection);
-document.addEventListener('selectionchange',saveSelection);
+document.addEventListener('selectionchange',function(){
+  if(!savedRange)saveSelection();
+});
+/* Mobile: save selection the INSTANT user touches a toolbar button,
+   before Chrome dismisses the selection */
+document.addEventListener('touchstart',function(e){
+  if(e.target.closest('.tb-btn')||e.target.closest('.tb-cplbl')){
+    var sel=window.getSelection();
+    if(sel&&sel.rangeCount>0&&sel.anchorNode){
+      var el=sel.anchorNode.nodeType===3?sel.anchorNode.parentNode:sel.anchorNode;
+      if(el&&el.closest){
+        var ed=el.closest('.editor-editable');
+        if(ed){lastEd=ed;savedRange=sel.getRangeAt(0).cloneRange();}
+      }
+    }
+  }
+},true);
 function execOnEditor(cmd,val){
   if(!lastEd||!savedRange)return;
   lastEd.focus();
