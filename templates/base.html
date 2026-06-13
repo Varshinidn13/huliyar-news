@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ{% endblock %}</title>
+<meta property="og:site_name"    content="ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ">
+<meta property="og:type"         content="{% block og_type %}website{% endblock %}">
+<meta property="og:title"        content="{% block og_title %}ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ{% endblock %}">
+<meta property="og:description"  content="{% block og_desc %}ಗ್ರಾಮೀಣ ಸುದ್ದಿ - ಸ್ಥಳೀಯ ಅಪ್ಡೇಟ್{% endblock %}">
+<meta property="og:image"        content="{% block og_image %}{{ site_url }}/static/logo.png{% endblock %}">
+<meta property="og:image:width"  content="600">
+<meta property="og:image:height" content="400">
+<meta property="og:url"          content="{% block og_url %}{{ site_url }}{% endblock %}">
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="{% block tw_title %}ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ{% endblock %}">
+<meta name="twitter:description" content="{% block tw_desc %}ಗ್ರಾಮೀಣ ಸುದ್ದಿ{% endblock %}">
+<meta name="twitter:image"       content="{% block tw_img %}{{ site_url }}/static/logo.png{% endblock %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;500;600;700;800&family=Noto+Serif+Kannada:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Noto Sans Kannada',sans-serif;background:#f4f4ef;color:#1a1a1a}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;height:auto;display:block}
+:root{--red:#c0392b;--red2:#96281b;--gold:#e8a020;--navbg:#111827;--bg:#f4f4ef;--border:#e0e0e0;--muted:#666}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#c0392b,#7b1d12);padding:10px 13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hdr-l{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.logo-ring{width:52px;height:52px;min-width:52px;background:#fff;border-radius:50%;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center}
+.logo-ring img{width:100%;height:100%;object-fit:cover}
+.logo-fallback{font-size:22px;display:none}
+.hdr-txt h1{font-family:'Noto Serif Kannada',serif;font-size:15px;font-weight:800;color:#fff;line-height:1.25;text-shadow:1px 1px 2px rgba(0,0,0,.4)}
+.hdr-txt p{font-size:10px;color:rgba(255,255,255,.8);margin-top:2px}
+.hdr-r{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0}
+.hdr-clk{color:#fff;font-size:11px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.hdr-dt{color:rgba(255,255,255,.7);font-size:10px;white-space:nowrap}
+.hdr-ebtn{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);color:#fff;padding:3px 9px;border-radius:12px;font-size:10.5px;transition:.2s;margin-top:1px}
+.hdr-ebtn:hover{background:rgba(255,255,255,.28)}
+@media(min-width:600px){.hdr-txt h1{font-size:19px}.hdr-txt p{font-size:11.5px}.logo-ring{width:60px;height:60px;min-width:60px}}
+
+/* NAV — ಅಪರಾಧ is styled SAME as all others, no special color */
+.nav{background:var(--navbg);overflow-x:auto;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.nav::-webkit-scrollbar{display:none}
+.nav a{display:inline-block;color:rgba(255,255,255,.78);padding:9px 12px;font-size:12.5px;font-weight:500;border-bottom:3px solid transparent;transition:.18s;white-space:nowrap}
+.nav a:hover,.nav a.on{color:#fff;border-bottom-color:var(--gold);background:rgba(255,255,255,.07)}
+
+/* BREAKING */
+.brk{background:var(--red);display:flex;align-items:stretch;overflow:hidden}
+.brk-lbl{background:#111;color:#fff;padding:0 11px;font-size:10px;font-weight:700;letter-spacing:.8px;white-space:nowrap;display:flex;align-items:center;flex-shrink:0}
+.brk-track{flex:1;overflow:hidden;display:flex;align-items:center}
+.brk-inner{display:flex;animation:scrl 50s linear infinite;width:max-content}
+.brk-inner a{color:#fff;font-size:12px;padding:8px 32px 8px 0;white-space:nowrap}
+.brk-inner a:hover{text-decoration:underline}
+@keyframes scrl{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* FLASH */
+.fm{padding:9px 13px;margin:9px 12px;border-radius:5px;font-size:12.5px;font-weight:600}
+.fm.ok{background:#d4edda;color:#155724;border:1px solid #c3e6cb}
+.fm.er{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb}
+
+/* LAYOUT */
+.wrap{max-width:1060px;margin:0 auto;padding:12px;display:grid;grid-template-columns:1fr 275px;gap:14px}
+@media(max-width:750px){.wrap{grid-template-columns:1fr;padding:9px}}
+
+/* SECTION HEADING */
+.sh{font-family:'Noto Serif Kannada',serif;font-size:15.5px;font-weight:700;color:var(--red);border-left:4px solid var(--red);padding-left:9px;margin-bottom:11px}
+
+/* NEWS CARD */
+.ngrid{display:flex;flex-direction:column;gap:10px}
+.ncard{background:#fff;border-radius:7px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,.09);display:flex;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.ncard:hover{transform:translateY(-2px);box-shadow:0 3px 12px rgba(0,0,0,.13)}
+.nc-img{width:120px;min-height:96px;flex-shrink:0;background:#ece8e8;overflow:hidden}
+.nc-img img{width:100%;height:100%;object-fit:cover;min-height:96px}
+.nc-noimg{width:100%;min-height:96px;background:linear-gradient(135deg,#f5e0de,#ead5d3);display:flex;align-items:center;justify-content:center;color:#c0392b;font-size:26px}
+.nc-body{padding:9px 10px;flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
+/* category tag — same red/white for ALL categories including ಅಪರಾಧ */
+.ctag{display:inline-block;background:var(--red);color:#fff;font-size:9.5px;padding:1px 6px;border-radius:3px;font-weight:700;letter-spacing:.2px;align-self:flex-start}
+.nc-title{font-family:'Noto Serif Kannada',serif;font-size:12.5px;font-weight:700;line-height:1.5;color:#111;flex:1}
+.nc-meta{font-size:10.5px;color:var(--muted);display:flex;gap:7px;flex-wrap:wrap}
+.nc-acts{display:flex;gap:5px;flex-wrap:wrap}
+.abtn{background:none;border:1px solid var(--border);border-radius:3px;padding:2px 7px;font-size:10px;color:var(--muted);cursor:pointer;transition:.15s;font-family:inherit;white-space:nowrap}
+.abtn:hover{background:var(--red);color:#fff;border-color:var(--red)}
+@media(max-width:460px){.nc-img{width:95px;min-height:84px}.nc-img img{min-height:84px}.nc-noimg{min-height:84px}.nc-title{font-size:12px}}
+
+/* SIDEBAR */
+.sb{display:flex;flex-direction:column;gap:13px}
+.sc{background:#fff;border-radius:7px;padding:12px;box-shadow:0 1px 5px rgba(0,0,0,.09)}
+.tlist{list-style:none}
+.ti{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0f0;cursor:pointer;align-items:flex-start}
+.ti:last-child{border-bottom:none;padding-bottom:0}
+.tnum{width:20px;height:20px;min-width:20px;background:var(--red);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;margin-top:1px}
+.tnum.gd{background:var(--gold);color:#333}
+.tinfo a{font-size:11.5px;font-weight:600;color:#111;line-height:1.4;display:block}
+.tinfo a:hover{color:var(--red)}
+.tmeta{font-size:10px;color:var(--muted);margin-top:1px}
+.clist{list-style:none;display:flex;flex-direction:column;gap:4px}
+.clist li a{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--bg);border-radius:4px;font-size:12.5px;font-weight:500;transition:.15s;border-left:3px solid transparent}
+.clist li a:hover{background:#fde8e6;border-left-color:var(--red);color:var(--red)}
+
+/* FOOTER */
+.ft{background:#111;color:rgba(255,255,255,.75);text-align:center;padding:18px 13px;margin-top:22px}
+.ft-soc{display:flex;justify-content:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.ft-soc a{color:#fff;background:rgba(255,255,255,.1);padding:6px 12px;border-radius:14px;font-size:12px;transition:.2s}
+.ft-soc a:hover{background:var(--red)}
+.ft p{font-size:12px;margin-bottom:3px}
+.ft a{color:var(--gold)}
+.ft-copy{font-size:10px;color:rgba(255,255,255,.33);margin-top:6px}
+</style>
+{% block xhead %}{% endblock %}
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-l">
+    <div class="logo-ring">
+      <img src="{{ url_for('static', filename='logo.png') }}?v={{ range(9999)|random }}" alt="Logo"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span class="logo-fallback">&#128240;</span>
+    </div>
+    <div class="hdr-txt">
+      <h1>ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ</h1>
+      <p>ಗ್ರಾಮೀಣ ಸುದ್ದಿ &bull; ಸ್ಥಳೀಯ ಅಪ್ಡೇಟ್</p>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <span class="hdr-clk" id="clk"></span>
+    <span class="hdr-dt"  id="hdt"></span>
+    <a href="{{ url_for('editor_login') }}" class="hdr-ebtn">&#9998; Editor</a>
+  </div>
+</header>
+
+<nav class="nav">
+  <a href="{{ url_for('home') }}" {% if not active_cat %}class="on"{% endif %}>ಮುಖಪುಟ</a>
+  {% for cat in categories %}
+  <a href="{{ url_for('category', cat=cat) }}" {% if active_cat==cat %}class="on"{% endif %}>{{ cat }}</a>
+  {% endfor %}
+</nav>
+
+{% block breaking %}{% endblock %}
+
+{% with msgs = get_flashed_messages() %}{% if msgs %}
+{% for m in msgs %}
+  {% if m.startswith('success:') %}<div class="fm ok">{{ m[8:] }}</div>
+  {% elif m.startswith('error:') %}<div class="fm er">{{ m[6:] }}</div>
+  {% else %}<div class="fm er">{{ m }}</div>{% endif %}
+{% endfor %}{% endif %}{% endwith %}
+
+{% block content %}{% endblock %}
+
+<footer class="ft">
+  <div class="ft-soc">
+    <a href="https://www.facebook.com/share/g/189BVq5vVs/" target="_blank">Facebook</a>
+    <a href="https://youtube.com/@huliyarbabu" target="_blank">YouTube</a>
+  </div>
+  <p>ವರದಿ : ನರೇಂದ್ರ ಬಾಬು &mdash; ಹುಳಿಯಾರು</p>
+  <p><a href="tel:9448760070">9448760070</a></p>
+  <p class="ft-copy">&copy; 2026 ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ. All rights reserved.</p>
+</footer>
+
+<script>
+(function(){
+  function tick(){
+    var n=new Date(),h=n.getHours(),m=n.getMinutes(),s=n.getSeconds();
+    var ap=h>=12?'PM':'AM',hh=(h%12||12).toString().padStart(2,'0');
+    var c=document.getElementById('clk');
+    if(c)c.textContent=hh+':'+('0'+m).slice(-2)+':'+('0'+s).slice(-2)+' '+ap;
+    var d=document.getElementById('hdt');
+    if(d)d.textContent=('0'+n.getDate()).slice(-2)+'/'+ ('0'+(n.getMonth()+1)).slice(-2)+'/'+n.getFullYear();
+  }
+  tick();setInterval(tick,1000);
+})();
+</script>
+</body>
+</html>

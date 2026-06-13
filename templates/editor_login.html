@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Editor Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans Kannada',sans-serif;background:#f0f2f5;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
+.card{background:#fff;border-radius:10px;width:100%;max-width:390px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.13)}
+.ch{background:linear-gradient(135deg,#c0392b,#7b1d12);padding:24px 20px;text-align:center;color:#fff}
+.logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px}
+.lc{width:48px;height:48px;background:#fff;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.lc img{width:100%;height:100%;object-fit:cover;display:block}
+.ch h2{font-size:16px;font-weight:700}
+.ch p{font-size:11px;opacity:.8;margin-top:3px}
+.cb{padding:24px 20px}
+.fg{margin-bottom:15px}
+.fg label{display:block;font-size:12.5px;font-weight:600;color:#555;margin-bottom:5px}
+.fg input{width:100%;padding:10px 12px;border:2px solid #ddd;border-radius:6px;font-size:14px;font-family:inherit;outline:none;transition:.2s}
+.fg input:focus{border-color:#c0392b}
+.btn{width:100%;background:#c0392b;color:#fff;border:none;padding:12px;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
+.btn:hover{background:#96281b}
+.back{display:block;text-align:center;margin-top:13px;color:#888;font-size:12.5px}
+.back:hover{color:#c0392b}
+.er{background:#f8d7da;color:#721c24;padding:9px 12px;border-radius:5px;font-size:12.5px;margin-bottom:13px;border:1px solid #f5c6cb}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="ch">
+    <div class="logo-row">
+      <div class="lc">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo"
+             onerror="this.style.display='none';this.parentElement.innerHTML='&#128240;'">
+      </div>
+      <div>
+        <h2>ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ</h2>
+        <p>Editor Login Panel</p>
+      </div>
+    </div>
+  </div>
+  <div class="cb">
+    {% with msgs = get_flashed_messages() %}{% if msgs %}{% for m in msgs %}
+    <div class="er">{{ m[6:] if m.startswith('error:') else m }}</div>
+    {% endfor %}{% endif %}{% endwith %}
+    <form method="POST">
+      <div class="fg">
+        <label>ಫೋನ್ ನಂಬರ್</label>
+        <input type="tel" name="phone" placeholder="9XXXXXXXXX" required autocomplete="tel">
+      </div>
+      <div class="fg">
+        <label>ಪಾಸ್‌ವರ್ಡ್</label>
+        <input type="password" name="password" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn">Login</button>
+    </form>
+    <a href="{{ url_for('home') }}" class="back">← ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ</a>
+  </div>
+</div>
+</body>
+</html>

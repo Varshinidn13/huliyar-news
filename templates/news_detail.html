@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% block title %}{{ article.title }} - ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ article.title }}{% endblock %}
+{% block og_desc %}{% for b in blocks %}{% if b.type=='text' %}{{ b.content[:150] }}{% endif %}{% endfor %}{% endblock %}
+{% block og_image %}{{ og_image }}{% endblock %}
+{% block og_url %}{{ site_url }}/news/{{ article.id }}{% endblock %}
+{% block tw_title %}{{ article.title }}{% endblock %}
+{% block tw_desc %}{% for b in blocks %}{% if b.type=='text' %}{{ b.content[:150] }}{% endif %}{% endfor %}{% endblock %}
+{% block tw_img %}{{ og_image }}{% endblock %}
+
+{% block xhead %}
+<style>
+.aw{max-width:1060px;margin:0 auto;padding:12px;display:grid;grid-template-columns:1fr 275px;gap:14px}
+@media(max-width:750px){.aw{grid-template-columns:1fr;padding:9px}}
+.ac{background:#fff;border-radius:7px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,.09)}
+.a-hero{width:100%;max-height:400px;object-fit:cover;display:block}
+.ab{padding:16px}
+/* top row: category tag */
+.a-ctag{display:inline-block;background:var(--red);color:#fff;font-size:10px;padding:2px 8px;border-radius:3px;font-weight:700;margin-bottom:8px}
+/* title */
+.a-title{font-family:'Noto Serif Kannada',serif;font-size:20px;font-weight:800;line-height:1.5;color:#111;margin-bottom:8px}
+/* EDITOR BYLINE — appears right below headline */
+.a-byline{font-size:12px;color:#555;margin-bottom:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;border-left:3px solid var(--red);padding-left:8px;background:#fdf5f5;padding:6px 10px;border-radius:0 5px 5px 0}
+.a-byline a{color:var(--red);font-weight:700}
+/* meta row */
+.a-meta{display:flex;gap:12px;font-size:11.5px;color:var(--muted);padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:14px;flex-wrap:wrap}
+/* content blocks */
+.blocks{display:flex;flex-direction:column;gap:14px}
+.b-txt{font-size:14.5px;line-height:1.9;color:#222}
+.b-img{border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.b-img img{width:100%;max-height:420px;object-fit:cover;display:block}
+/* share */
+.srow{display:flex;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--border);flex-wrap:wrap}
+.sbtn{padding:8px 14px;border-radius:6px;font-size:12.5px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:.18s}
+.s-wa{background:#25d366;color:#fff}.s-wa:hover{background:#1da851}
+.s-cp{background:#f0f0f0;color:#333}.s-cp:hover{background:#e0e0e0}
+.s-sh{background:#8e44ad;color:#fff}.s-sh:hover{background:#7d3c98}
+.s-hm{background:var(--red);color:#fff;display:inline-flex;align-items:center}.s-hm:hover{background:var(--red2)}
+/* recent */
+.rec{display:flex;flex-direction:column}
+.ri{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f0f0f0;cursor:pointer}
+.ri:last-child{border-bottom:none;padding-bottom:0}
+.ri-th{width:50px;height:38px;object-fit:cover;border-radius:3px;flex-shrink:0;background:#eee}
+.ri-nth{width:50px;height:38px;background:#f0eded;border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--red);font-size:16px;flex-shrink:0}
+.ri-t{font-size:11.5px;font-weight:600;color:#111;line-height:1.4}.ri-t:hover{color:var(--red)}
+@media(max-width:480px){.a-title{font-size:17px}.b-txt{font-size:13.5px}}
+</style>
+{% endblock %}
+
+{% block breaking %}
+<div class="brk">
+  <div class="brk-lbl">BREAKING</div>
+  <div class="brk-track">
+    <div class="brk-inner">
+      {% for n in recent %}<a href="{{ url_for('news_detail', nid=n.id) }}">{{ n.title }}</a>{% endfor %}
+      {% for n in recent %}<a href="{{ url_for('news_detail', nid=n.id) }}">{{ n.title }}</a>{% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="aw">
+  <main>
+    <div class="ac">
+      {% if article.image %}
+      <img class="a-hero" src="{{ media_url(article.image) }}" alt="{{ article.title }}">
+      {% endif %}
+      <div class="ab">
+        <!-- Category tag -->
+        <span class="a-ctag">{{ article.category }}</span>
+
+        <!-- Title -->
+        <h1 class="a-title">{{ article.title }}</h1>
+
+        <!-- EDITOR BYLINE — directly under title -->
+        <div class="a-byline">
+          <span>Editor &#9997;:</span>
+          <a href="tel:9448760070">ನರೇಂದ್ರಬಾಬು &nbsp;|&nbsp; 9448760070</a>
+        </div>
+
+        <!-- Date / views -->
+        <div class="a-meta">
+          <span>Last updated: {{ article.updated_at or article.created_at }}</span>
+          <span>&#128065; {{ article.views }} views</span>
+        </div>
+
+        <!-- Content blocks: text and image alternating -->
+        <div class="blocks">
+          {% for b in blocks %}
+            {% if b.type == 'text' %}
+              <p class="b-txt">{{ b.content | replace('\n','<br>') | safe }}</p>
+            {% elif b.type == 'image' %}
+              <figure class="b-img">
+                <img src="{{ media_url(b.content) }}"
+                     alt="ಚಿತ್ರ"
+                     onerror="this.closest('figure').style.display='none'">
+              </figure>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="srow">
+          <button class="sbtn s-wa" onclick="shareWA()">WhatsApp</button>
+          <button class="sbtn s-sh" onclick="shareNative()">Share</button>
+          <button class="sbtn s-cp" onclick="copyLink()">ಲಿಂಕ್ ಕಾಪಿ</button>
+          <a class="sbtn s-hm" href="{{ url_for('home') }}">ಮುಖಪುಟ</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <aside class="sb">
+    <div class="sc">
+      <h3 class="sh">ಇತ್ತೀಚಿನ ಸುದ್ದಿ</h3>
+      <div class="rec">
+        {% for n in recent %}{% if n.id != article.id %}
+        <div class="ri" onclick="location.href='{{ url_for('news_detail', nid=n.id) }}'">
+          {% if n.image %}
+          <img class="ri-th" src="{{ media_url(n.image) }}" alt=""
+               onerror="this.style.background='#eee'">
+          {% else %}
+          <div class="ri-nth">&#128240;</div>
+          {% endif %}
+          <a class="ri-t" href="{{ url_for('news_detail', nid=n.id) }}">
+            {{ n.title[:65] }}{% if n.title|length>65 %}...{% endif %}
+          </a>
+        </div>
+        {% endif %}{% endfor %}
+      </div>
+    </div>
+    <div class="sc">
+      <h3 class="sh">ವಿಭಾಗಗಳು</h3>
+      <ul class="clist">
+        {% for cat in categories %}
+        <li><a href="{{ url_for('category', cat=cat) }}"><span>{{ cat }}</span><span style="color:var(--muted)">&#8250;</span></a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </aside>
+</div>
+<script>
+var PAGE_URL='{{ site_url }}/news/{{ article.id }}';
+var PAGE_TITLE={{ article.title|tojson }};
+function shareWA(){
+  window.open('https://wa.me/?text='+encodeURIComponent(PAGE_TITLE+'\n\n'+PAGE_URL));
+}
+function shareNative(){
+  if(navigator.share){
+    navigator.share({title:PAGE_TITLE, url:PAGE_URL}).catch(function(){});
+  } else {
+    window.open('https://wa.me/?text='+encodeURIComponent(PAGE_TITLE+'\n\n'+PAGE_URL));
+  }
+}
+function copyLink(){
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(PAGE_URL).then(function(){alert('ಲಿಂಕ್ ಕಾಪಿ ಆಗಿದೆ!');});
+  } else {
+    prompt('ಲಿಂಕ್:',PAGE_URL);
+  }
+}
+</script>
+{% endblock %}

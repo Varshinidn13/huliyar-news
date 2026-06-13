@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ಹೊಸ ಸುದ್ದಿ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans Kannada',sans-serif;background:#f0f2f5;min-height:100vh}
+.tb{background:linear-gradient(135deg,#111827,#1e3a5f);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.tb h1{color:#fff;font-size:14px;font-weight:700}
+.tbl{display:flex;gap:7px}
+.tbl a{color:rgba(255,255,255,.82);font-size:11.5px;padding:4px 10px;border-radius:12px;background:rgba(255,255,255,.1);transition:.18s}
+.tbl a:hover{background:rgba(255,255,255,.22);color:#fff}
+.pg{max-width:680px;margin:20px auto;padding:0 13px 40px}
+.er{background:#f8d7da;color:#721c24;padding:9px 12px;border-radius:5px;font-size:12.5px;margin-bottom:12px;border:1px solid #f5c6cb}
+.fc{background:#fff;border-radius:9px;box-shadow:0 2px 10px rgba(0,0,0,.1);overflow:hidden}
+.fch{background:linear-gradient(135deg,#c0392b,#96281b);padding:14px 20px;color:#fff}
+.fch h2{font-size:15px;font-weight:700}
+.fb{padding:20px;display:flex;flex-direction:column;gap:16px}
+.fg label{display:block;font-size:12.5px;font-weight:600;color:#555;margin-bottom:5px}
+.fg input,.fg textarea,.fg select{width:100%;padding:10px 12px;border:2px solid #ddd;border-radius:6px;font-size:13.5px;font-family:inherit;outline:none;transition:.2s;-webkit-appearance:none;background:#fff}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:#c0392b}
+.fg textarea{min-height:130px;resize:vertical;line-height:1.75}
+.editor-tb{display:flex;gap:4px;align-items:center;padding:5px 0;flex-wrap:wrap}
+.tb-btn{background:#f0f0f0;border:1px solid #ccc;border-radius:3px;padding:3px 10px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;transition:.1s;line-height:1.4;user-select:none}
+.tb-btn:active{background:#ccc;border-color:#999;transform:scale(.95)}
+.tb-btn:hover{background:#e0e0e0;border-color:#999}
+.tb-red{color:#c0392b}.tb-red:hover{background:#ffe8e8;border-color:#c0392b}
+.tb-blue{color:#2980b9}.tb-blue:hover{background:#e8f4ff;border-color:#2980b9}
+.tb-green{color:#27ae60}.tb-green:hover{background:#e8f8ef;border-color:#27ae60}
+.tb-black{color:#000}.tb-black:hover{background:#f0f0f0;border-color:#000}
+.tb-color{width:28px;height:26px;border:1px solid #ccc;border-radius:3px;padding:1px;cursor:pointer;background:#fff;vertical-align:middle}
+.tb-cplbl{display:inline-flex;align-items:center;gap:2px;font-size:11px;color:#888;cursor:pointer}
+.editor-editable{min-height:100px;border:2px solid #ddd;border-radius:6px;padding:10px 12px;font-size:13.5px;font-family:inherit;outline:none;transition:.2s;line-height:1.75;background:#fff}
+.editor-editable:focus{border-color:#c0392b}
+.editor-editable b{font-weight:700}
+.chk-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff8e6;border:1px solid #f0d060;border-radius:6px}
+.chk-row input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:#c0392b}
+.chk-row label{font-size:13px;font-weight:600;color:#554400;cursor:pointer}
+.hero-box{border:2px dashed #ddd;border-radius:6px;padding:18px;text-align:center;cursor:pointer;transition:.2s;color:#bbb}
+.hero-box:hover{border-color:#c0392b;background:#fff8f8}
+.hero-box .ico{font-size:26px;margin-bottom:5px}
+.hero-box p{font-size:12.5px;color:#777}
+.hero-box small{font-size:10.5px;color:#bbb}
+#heroprev{display:none;margin-top:9px}
+#heroprev img{width:100%;max-height:200px;object-fit:cover;border-radius:5px;border:2px solid #ddd}
+.blocks-area{display:flex;flex-direction:column;gap:0}
+.block-pair{border:1px solid #e8e8e8;border-radius:7px;overflow:hidden;margin-bottom:12px}
+.block-pair-head{background:#f8f8f8;padding:7px 12px;font-size:11.5px;font-weight:700;color:#555;border-bottom:1px solid #e8e8e8;display:flex;justify-content:space-between;align-items:center}
+.block-pair-body{padding:12px;display:flex;flex-direction:column;gap:10px}
+.img-upload-box{border:2px dashed #ddd;border-radius:6px;padding:16px;text-align:center;cursor:pointer;transition:.2s;color:#bbb;background:#fafafa}
+.img-upload-box:hover{border-color:#c0392b;background:#fff8f8}
+.img-upload-box .ico{font-size:24px;margin-bottom:5px}
+.img-upload-box p{font-size:12px;color:#888}
+.img-upload-box small{font-size:10.5px;color:#bbb}
+.img-preview{display:none;margin-top:8px}
+.img-preview img{width:100%;max-height:200px;object-fit:cover;border-radius:5px;border:2px solid #ddd}
+.rm-btn{background:#fee;border:1px solid #fcc;color:#c0392b;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;font-family:inherit}
+.rm-btn:hover{background:#fcc}
+.add-btn{background:#f0f8ff;border:2px dashed #4a90d9;color:#4a90d9;border-radius:7px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;width:100%;text-align:center}
+.add-btn:hover{background:#e0f0ff;border-color:#2070b9;color:#2070b9}
+.sbtn{background:#c0392b;color:#fff;border:none;padding:13px;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;width:100%}
+.sbtn:hover{background:#96281b}
+</style>
+</head>
+<body>
+<div class="tb">
+  <h1>ಹೊಸ ಸುದ್ದಿ ಪ್ರಕಟಿಸಿ</h1>
+  <div class="tbl">
+    <a href="{{ url_for('editor_dashboard') }}">&#8592; Dashboard</a>
+    <a href="{{ url_for('home') }}">ಮುಖಪುಟ</a>
+  </div>
+</div>
+
+<div class="pg">
+  {% with msgs = get_flashed_messages() %}{% if msgs %}{% for m in msgs %}
+  <div class="er">{{ m[6:] if m.startswith('error:') else m }}</div>
+  {% endfor %}{% endif %}{% endwith %}
+
+  <div class="fc">
+    <div class="fch"><h2>ಸುದ್ದಿ ವಿವರಗಳು ತುಂಬಿರಿ</h2></div>
+    <form method="POST" enctype="multipart/form-data" class="fb" id="postForm" data-compress-images>
+
+      <div class="fg">
+        <label>ಶೀರ್ಷಿಕೆ (Title) *</label>
+        <input type="text" name="title" placeholder="ಸುದ್ದಿ ಶೀರ್ಷಿಕೆ ಬರೆಯಿರಿ..." required>
+      </div>
+
+      <div class="fg">
+        <label>ವಿಭಾಗ (Category) *</label>
+        <select name="category">
+          {% for cat in categories %}
+          <option value="{{ cat }}">{{ cat }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="chk-row">
+        <input type="checkbox" name="breaking_news" id="brk_chk" value="1">
+        <label for="brk_chk">Breaking News ಟಿಕರ್ ನಲ್ಲಿ ತೋರಿಸಿ</label>
+      </div>
+
+      <div class="fg">
+        <label>ಮೇಲ್ಭಾಗದ ಚಿತ್ರ (Hero Image) &mdash; ಐಚ್ಛಿಕ</label>
+        <div class="hero-box" onclick="document.getElementById('herofile').click()">
+          <div class="ico">&#128247;</div>
+          <p>ಮುಖ್ಯ ಚಿತ್ರ ಆಯ್ಕೆ ಮಾಡಿ</p>
+          <small>JPG, PNG &mdash; Max 20MB</small>
+        </div>
+        <input type="file" id="herofile" name="hero_image" accept="image/*"
+               style="display:none" onchange="prevHero(this)">
+        <div id="heroprev"><img id="hpel" src="" alt=""></div>
+      </div>
+
+      <div class="fg">
+        <label>ಸುದ್ದಿ ವಿಷಯ &amp; ಚಿತ್ರಗಳು</label>
+        <div class="blocks-area" id="blocksArea"></div>
+        <button type="button" class="add-btn" onclick="addBlock()">+ ಟೆಕ್ಸ್ಟ್ ಮತ್ತು ಚಿತ್ರ ಬ್ಲಾಕ್ ಸೇರಿಸಿ</button>
+      </div>
+
+      <button type="submit" class="sbtn">ಸುದ್ದಿ ಪ್ರಕಟಿಸಿ</button>
+    </form>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='image-compress.js') }}"></script>
+<script>
+var blockIdx=0;
+function addBlock(){
+  var area=document.getElementById('blocksArea'),idx=blockIdx++,div=document.createElement('div');
+  div.className='block-pair';div.id='bp_'+idx;
+  div.innerHTML=
+    '<div class="block-pair-head"><span>ಬ್ಲಾಕ್ '+(idx+1)+'</span>'+
+    '<button type="button" class="rm-btn" onclick="removeBlock('+idx+')">&#10005; ತೆಗೆಯಿರಿ</button></div>'+
+    '<div class="block-pair-body">'+
+    '<div class="fg"><label>ಸುದ್ದಿ ವಿಷಯ (Content) — select text, then click <b>B</b> or a color</label>'+
+    '<div class="editor-tb">'+
+      '<button type="button" class="tb-btn" onclick="fmtBold()" title="Bold"><b>B</b></button>'+
+      '<button type="button" class="tb-btn tb-black" onclick="fmtColor(\'#000000\')" title="Black">A</button>'+
+      '<button type="button" class="tb-btn tb-red" onclick="fmtColor(\'#c0392b\')" title="Red">R</button>'+
+      '<button type="button" class="tb-btn tb-blue" onclick="fmtColor(\'#2980b9\')" title="Blue">B</button>'+
+      '<button type="button" class="tb-btn tb-green" onclick="fmtColor(\'#27ae60\')" title="Green">G</button>'+
+      '<label class="tb-cplbl"><input type="color" class="tb-color" onchange="fmtColor(this.value)" title="Custom color" value="#c0392b"></label>'+
+    '</div>'+
+    '<div class="editor-editable" id="ed_'+idx+'" contenteditable="true" onfocus="lastEd=this"></div>'+
+    '<input type="hidden" name="content_'+idx+'" id="hd_'+idx+'"></div>'+
+    '<div class="fg"><label>&#128247; ಫೋಟೋ ಅಪ್ಲೋಡ್ (Image)</label>'+
+    '<div class="img-upload-box" onclick="document.getElementById(\'img_'+idx+'\').click()">'+
+    '<div class="ico">&#128444;</div><p>ಚಿತ್ರ ಆಯ್ಕೆ ಮಾಡಿ</p><small>JPG, PNG &mdash; Max 20MB</small></div>'+
+    '<input type="file" id="img_'+idx+'" name="block_image_'+idx+'" accept="image/*" style="display:none" onchange="prevBlock(this,'+idx+')">'+
+    '<div class="img-preview" id="prev_'+idx+'"><img id="pimg_'+idx+'" src="" alt=""></div></div>'+
+    '</div>';
+  area.appendChild(div);
+}
+function removeBlock(idx){var el=document.getElementById('bp_'+idx);if(el)el.remove();}
+function prevBlock(input,idx){
+  var f=input.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(e){document.getElementById('pimg_'+idx).src=e.target.result;document.getElementById('prev_'+idx).style.display='block';};
+  r.readAsDataURL(f);
+}
+function prevHero(input){
+  var f=input.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(e){document.getElementById('hpel').src=e.target.result;document.getElementById('heroprev').style.display='block';};
+  r.readAsDataURL(f);
+}
+var lastEd=null,savedRange=null;
+document.addEventListener('mouseup',function(){
+  var sel=window.getSelection();
+  if(sel&&sel.rangeCount>0&&sel.anchorNode){
+    var el=sel.anchorNode.nodeType===3?sel.anchorNode.parentNode:sel.anchorNode;
+    if(el&&el.closest){
+      var ed=el.closest('.editor-editable');
+      if(ed){lastEd=ed;savedRange=sel.getRangeAt(0).cloneRange();}
+    }
+  }
+});
+function execOnEditor(cmd,val){
+  if(!lastEd||!savedRange)return;
+  lastEd.focus();
+  var sel=window.getSelection();sel.removeAllRanges();sel.addRange(savedRange);
+  document.execCommand(cmd,false,val||null);
+}
+function fmtBold(){execOnEditor('bold');}
+function fmtColor(c){execOnEditor('foreColor',c);}
+
+document.getElementById('postForm').onsubmit=function(){
+  var eds=document.querySelectorAll('.editor-editable');
+  for(var i=0;i<eds.length;i++){
+    var id=eds[i].id.replace('ed_','');
+    document.getElementById('hd_'+id).value=eds[i].innerHTML;
+  }
+};
+
+addBlock();
+</script>
+</body>
+</html>

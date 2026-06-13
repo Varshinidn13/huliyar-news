@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}{% if active_cat %}{{ active_cat }} - {% endif %}ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ{% endblock %}
+
+{% block breaking %}
+<div class="brk">
+  <div class="brk-lbl">BREAKING</div>
+  <div class="brk-track">
+    <div class="brk-inner">
+      {% set brk_items = breaking if breaking else news %}
+      {% for n in brk_items[:10] %}<a href="{{ url_for('news_detail', nid=n.id) }}">{{ n.title }}</a>{% endfor %}
+      {% for n in brk_items[:10] %}<a href="{{ url_for('news_detail', nid=n.id) }}">{{ n.title }}</a>{% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="wrap">
+  <main>
+    <h2 class="sh">{% if active_cat %}{{ active_cat }} ಸುದ್ದಿ{% else %}ಇತ್ತೀಚಿನ ಸುದ್ದಿ{% endif %}</h2>
+    <div class="ngrid">
+      {% for n in news %}
+      <div class="ncard">
+        <!-- Clickable area -->
+        <a href="{{ url_for('news_detail', nid=n.id) }}"
+           style="display:flex;flex:1;min-width:0;text-decoration:none;color:inherit">
+          <div class="nc-img">
+            {% if n.image %}
+            <img src="{{ media_url(n.image) }}"
+                 alt="{{ n.title }}"
+                 onerror="this.parentElement.innerHTML='<div class=nc-noimg>&#128240;</div>'">
+            {% else %}
+            <div class="nc-noimg">&#128240;</div>
+            {% endif %}
+          </div>
+          <div class="nc-body">
+            <span class="ctag">{{ n.category }}</span>
+            <span class="nc-title">{{ n.title }}</span>
+            <div class="nc-meta">
+              <span>{{ n.updated_at or n.created_at }}</span>
+              <span>&#128065; {{ n.views }}</span>
+            </div>
+          </div>
+        </a>
+        <!-- Share buttons: WhatsApp | Share | Copy -->
+        <div style="padding:0 10px 9px;display:flex;gap:6px;flex-wrap:wrap">
+          <button class="abtn"
+            onclick="doWA(this)"
+            data-url="{{ site_url }}/news/{{ n.id }}"
+            data-title="{{ n.title | e }}">
+            WhatsApp
+          </button>
+          <button class="abtn"
+            onclick="doShare(this)"
+            data-url="{{ site_url }}/news/{{ n.id }}"
+            data-title="{{ n.title | e }}">
+            Share
+          </button>
+          <button class="abtn"
+            onclick="doCopy(this)"
+            data-url="{{ site_url }}/news/{{ n.id }}">
+            Copy
+          </button>
+        </div>
+      </div>
+      {% else %}
+      <p style="text-align:center;padding:38px;color:var(--muted);font-size:13px">
+        ಈ ವಿಭಾಗದಲ್ಲಿ ಇನ್ನೂ ಯಾವುದೇ ಸುದ್ದಿ ಇಲ್ಲ.
+      </p>
+      {% endfor %}
+    </div>
+  </main>
+
+  <aside class="sb">
+    <div class="sc">
+      <h3 class="sh">ಟ್ರೆಂಡಿಂಗ್ ಸುದ್ದಿ</h3>
+      <ul class="tlist">
+        {% for n in trending %}
+        <li class="ti" onclick="location.href='{{ url_for('news_detail', nid=n.id) }}'">
+          <div class="tnum {% if loop.index<=3 %}gd{% endif %}">{{ loop.index }}</div>
+          <div class="tinfo">
+            <a href="{{ url_for('news_detail', nid=n.id) }}">
+              {{ n.title[:60] }}{% if n.title|length>60 %}...{% endif %}
+            </a>
+            <div class="tmeta">{{ n.category }} &bull; {{ n.views }} views</div>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="sc">
+      <h3 class="sh">ವಿಭಾಗಗಳು</h3>
+      <ul class="clist">
+        {% for cat in categories %}
+        <li>
+          <a href="{{ url_for('category', cat=cat) }}">
+            <span>{{ cat }}</span>
+            <span style="color:var(--muted)">&#8250;</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<script>
+// WhatsApp direct share
+function doWA(btn) {
+  var url   = btn.getAttribute('data-url');
+  var title = btn.getAttribute('data-title');
+  window.open('https://wa.me/?text=' + encodeURIComponent(title + '\n\n' + url));
+}
+
+// Native share sheet (shows all apps: WhatsApp, Telegram, Instagram, Gmail etc.)
+// Falls back to WhatsApp on unsupported browsers
+function doShare(btn) {
+  var url   = btn.getAttribute('data-url');
+  var title = btn.getAttribute('data-title');
+  if (navigator.share) {
+    navigator.share({ title: title, url: url })
+      .catch(function(){});
+  } else {
+    // fallback: open WhatsApp share
+    window.open('https://wa.me/?text=' + encodeURIComponent(title + '\n\n' + url));
+  }
+}
+
+// Copy link
+function doCopy(btn) {
+  var url = btn.getAttribute('data-url');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(function() {
+      var orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.style.background = '#27ae60';
+      btn.style.color = '#fff';
+      setTimeout(function(){ btn.textContent = orig; btn.style.background=''; btn.style.color=''; }, 1500);
+    });
+  } else {
+    prompt('ಲಿಂಕ್ ಕಾಪಿ ಮಾಡಿ:', url);
+  }
+}
+</script>
+{% endblock %}
