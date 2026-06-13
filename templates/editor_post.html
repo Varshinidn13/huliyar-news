@@ -63,6 +63,12 @@ body{font-family:'Noto Sans Kannada',sans-serif;background:#f0f2f5;min-height:10
 .add-btn:hover{background:#e0f0ff;border-color:#2070b9;color:#2070b9}
 .sbtn{background:#c0392b;color:#fff;border:none;padding:13px;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;width:100%}
 .sbtn:hover{background:#96281b}
+/* Floating toolbar */
+.float-tb{display:none;position:fixed;z-index:9999;background:#1a1a2e;border-radius:8px;padding:5px 7px;gap:3px;align-items:center;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.float-tb button{background:rgba(255,255,255,.12);border:none;border-radius:4px;padding:6px 12px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;color:#fff;transition:.12s;min-width:32px;text-align:center}
+.float-tb button:active{background:rgba(255,255,255,.3);transform:scale(.92)}
+.float-tb .ft-red{color:#ff6b6b}.float-tb .ft-blue{color:#74b9ff}.float-tb .ft-green{color:#55efc4}.float-tb .ft-black{color:#fff}
+.float-tb .ft-cp{width:28px;height:28px;border:2px solid rgba(255,255,255,.25);border-radius:4px;padding:1px;cursor:pointer;background:#fff;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -125,7 +131,16 @@ body{font-family:'Noto Sans Kannada',sans-serif;background:#f0f2f5;min-height:10
   </div>
 </div>
 
-<script src="{{ url_for('static', filename='image-compress.js') }}"></script>
+<!-- Floating toolbar -->
+<div id="floatTb" class="float-tb">
+  <button type="button" class="ft-black" onclick="fmtBold()" title="Bold"><b>B</b></button>
+  <button type="button" class="ft-black" onclick="fmtColor('#000000')" title="Black">A</button>
+  <button type="button" class="ft-red" onclick="fmtColor('#c0392b')" title="Red">R</button>
+  <button type="button" class="ft-blue" onclick="fmtColor('#2980b9')" title="Blue">B</button>
+  <button type="button" class="ft-green" onclick="fmtColor('#27ae60')" title="Green">G</button>
+  <input type="color" class="ft-cp" onchange="fmtColor(this.value)" title="Custom color" value="#c0392b">
+</div>
+
 <script>
 var blockIdx=0;
 function addBlock(){
@@ -135,16 +150,8 @@ function addBlock(){
     '<div class="block-pair-head"><span>ಬ್ಲಾಕ್ '+(idx+1)+'</span>'+
     '<button type="button" class="rm-btn" onclick="removeBlock('+idx+')">&#10005; ತೆಗೆಯಿರಿ</button></div>'+
     '<div class="block-pair-body">'+
-    '<div class="fg"><label>ಸುದ್ದಿ ವಿಷಯ (Content) — select text, then click <b>B</b> or a color</label>'+
-    '<div class="editor-tb">'+
-      '<button type="button" class="tb-btn" onclick="fmtBold()" title="Bold"><b>B</b></button>'+
-      '<button type="button" class="tb-btn tb-black" onclick="fmtColor(\'#000000\')" title="Black">A</button>'+
-      '<button type="button" class="tb-btn tb-red" onclick="fmtColor(\'#c0392b\')" title="Red">R</button>'+
-      '<button type="button" class="tb-btn tb-blue" onclick="fmtColor(\'#2980b9\')" title="Blue">B</button>'+
-      '<button type="button" class="tb-btn tb-green" onclick="fmtColor(\'#27ae60\')" title="Green">G</button>'+
-      '<label class="tb-cplbl"><input type="color" class="tb-color" onchange="fmtColor(this.value)" title="Custom color" value="#c0392b"></label>'+
-    '</div>'+
-    '<div class="editor-editable" id="ed_'+idx+'" contenteditable="true" onfocus="lastEd=this"></div>'+
+    '<div class="fg"><label>ಸುದ್ದಿ ವಿಷಯ (Content) — select text, then tap <b>B</b> or a color from the popup</label>'+
+    '<div class="editor-editable" id="ed_'+idx+'" contenteditable="true"></div>'+
     '<input type="hidden" name="content_'+idx+'" id="hd_'+idx+'"></div>'+
     '<div class="fg"><label>&#128247; ಫೋಟೋ ಅಪ್ಲೋಡ್ (Image)</label>'+
     '<div class="img-upload-box" onclick="document.getElementById(\'img_'+idx+'\').click()">'+
@@ -167,7 +174,7 @@ function prevHero(input){
   r.onload=function(e){document.getElementById('hpel').src=e.target.result;document.getElementById('heroprev').style.display='block';};
   r.readAsDataURL(f);
 }
-var lastEd=null,savedRange=null;
+var lastEd=null,savedRange=null,floatTb=document.getElementById('floatTb');
 function saveSelection(){
   var sel=window.getSelection();
   if(!sel||!sel.rangeCount||!sel.anchorNode)return;
@@ -176,15 +183,27 @@ function saveSelection(){
   var ed=el.closest('.editor-editable');
   if(ed){lastEd=ed;savedRange=sel.getRangeAt(0).cloneRange();}
 }
-document.addEventListener('mouseup',saveSelection);
-document.addEventListener('touchend',saveSelection);
-document.addEventListener('selectionchange',function(){
-  if(!savedRange)saveSelection();
-});
-/* Mobile: save selection the INSTANT user touches a toolbar button,
-   before Chrome dismisses the selection */
+function showFloatTb(){
+  if(!savedRange||!lastEd){floatTb.style.display='none';return;}
+  if(window.getSelection().isCollapsed){floatTb.style.display='none';return;}
+  var r=savedRange.getBoundingClientRect();
+  if(!r||!r.width){floatTb.style.display='none';return;}
+  floatTb.style.display='flex';
+  var tbH=floatTb.offsetHeight||40;
+  var top=r.top-tbH-10;
+  if(top<5)top=r.bottom+8;
+  var left=r.left+r.width/2-floatTb.offsetWidth/2;
+  if(left<5)left=5;
+  if(left+floatTb.offsetWidth>window.innerWidth-5)left=window.innerWidth-floatTb.offsetWidth-5;
+  floatTb.style.top=top+'px';floatTb.style.left=left+'px';
+}
+function hideFloatTb(){floatTb.style.display='none';}
+document.addEventListener('mouseup',function(){saveSelection();setTimeout(showFloatTb,10);});
+document.addEventListener('touchend',function(){saveSelection();setTimeout(showFloatTb,300);});
+document.addEventListener('scroll',hideFloatTb,true);
 document.addEventListener('touchstart',function(e){
-  if(e.target.closest('.tb-btn')||e.target.closest('.tb-cplbl')){
+  if(e.target.closest('#floatTb')||e.target.closest('.tb-btn')||e.target.closest('.tb-cplbl')){
+    hideFloatTb();
     var sel=window.getSelection();
     if(sel&&sel.rangeCount>0&&sel.anchorNode){
       var el=sel.anchorNode.nodeType===3?sel.anchorNode.parentNode:sel.anchorNode;
@@ -193,6 +212,8 @@ document.addEventListener('touchstart',function(e){
         if(ed){lastEd=ed;savedRange=sel.getRangeAt(0).cloneRange();}
       }
     }
+  }else if(!e.target.closest('.editor-editable')){
+    setTimeout(hideFloatTb,200);
   }
 },true);
 function execOnEditor(cmd,val){
@@ -200,6 +221,7 @@ function execOnEditor(cmd,val){
   lastEd.focus();
   var sel=window.getSelection();sel.removeAllRanges();sel.addRange(savedRange);
   document.execCommand(cmd,false,val||null);
+  hideFloatTb();
 }
 function fmtBold(){execOnEditor('bold');}
 function fmtColor(c){execOnEditor('foreColor',c);}
