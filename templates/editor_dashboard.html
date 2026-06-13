@@ -112,7 +112,7 @@ tr:hover td{background:#fafafa}
             <td style="color:#aaa;font-size:11px">{{ n.id }}</td>
             <td>
               {% if n.image %}
-              <img class="th" src="{{ media_url(n.image) }}" alt="">
+              <img class="th" src="{{ url_for('static', filename='uploads/'+n.image) }}" alt="">
               {% else %}
               <div class="nth">&#128240;</div>
               {% endif %}
@@ -130,7 +130,7 @@ tr:hover td{background:#fafafa}
               {% else %}<span style="color:#ccc;font-size:11px">—</span>{% endif %}
             </td>
             <td>{{ n.views }}</td>
-            <td style="color:#aaa;font-size:10.5px;white-space:nowrap">{{ n.updated_at or n.created_at }}</td>
+            <td style="color:#aaa;font-size:10.5px;white-space:nowrap">{{ n.created_at }}</td>
             <td>
               <div class="act-btns">
                 <a href="{{ url_for('editor_edit', nid=n.id) }}" class="edit-btn">&#9998; Edit</a>

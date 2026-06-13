@@ -11,154 +11,163 @@
 
 {% block xhead %}
 <style>
-.aw{max-width:1060px;margin:0 auto;padding:12px;display:grid;grid-template-columns:1fr 275px;gap:14px}
-@media(max-width:750px){.aw{grid-template-columns:1fr;padding:9px}}
-.ac{background:#fff;border-radius:7px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,.09)}
-.a-hero{width:100%;max-height:400px;object-fit:cover;display:block}
-.ab{padding:16px}
-/* top row: category tag */
-.a-ctag{display:inline-block;background:var(--red);color:#fff;font-size:10px;padding:2px 8px;border-radius:3px;font-weight:700;margin-bottom:8px}
-/* title */
-.a-title{font-family:'Noto Serif Kannada',serif;font-size:20px;font-weight:800;line-height:1.5;color:#111;margin-bottom:8px}
-/* EDITOR BYLINE — appears right below headline */
-.a-byline{font-size:12px;color:#555;margin-bottom:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;border-left:3px solid var(--red);padding-left:8px;background:#fdf5f5;padding:6px 10px;border-radius:0 5px 5px 0}
-.a-byline a{color:var(--red);font-weight:700}
-/* meta row */
-.a-meta{display:flex;gap:12px;font-size:11.5px;color:var(--muted);padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:14px;flex-wrap:wrap}
-/* content blocks */
-.blocks{display:flex;flex-direction:column;gap:14px}
-.b-txt{font-size:14.5px;line-height:1.9;color:#222}
-.b-img{border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.b-img img{width:100%;max-height:420px;object-fit:cover;display:block}
-/* share */
-.srow{display:flex;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--border);flex-wrap:wrap}
-.sbtn{padding:8px 14px;border-radius:6px;font-size:12.5px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:.18s}
-.s-wa{background:#25d366;color:#fff}.s-wa:hover{background:#1da851}
-.s-cp{background:#f0f0f0;color:#333}.s-cp:hover{background:#e0e0e0}
-.s-sh{background:#8e44ad;color:#fff}.s-sh:hover{background:#7d3c98}
-.s-hm{background:var(--red);color:#fff;display:inline-flex;align-items:center}.s-hm:hover{background:var(--red2)}
-/* recent */
-.rec{display:flex;flex-direction:column}
-.ri{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f0f0f0;cursor:pointer}
-.ri:last-child{border-bottom:none;padding-bottom:0}
-.ri-th{width:50px;height:38px;object-fit:cover;border-radius:3px;flex-shrink:0;background:#eee}
-.ri-nth{width:50px;height:38px;background:#f0eded;border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--red);font-size:16px;flex-shrink:0}
-.ri-t{font-size:11.5px;font-weight:600;color:#111;line-height:1.4}.ri-t:hover{color:var(--red)}
-@media(max-width:480px){.a-title{font-size:17px}.b-txt{font-size:13.5px}}
+.aw{max-width:1180px;margin:0 auto;padding:28px 16px 40px;display:grid;grid-template-columns:1fr;gap:28px}
+@media(min-width:960px){.aw{grid-template-columns:1fr 320px;gap:36px}}
+.crumbs{font-size:12.5px;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.crumbs a{color:var(--brand);font-weight:600}
+.crumbs a:hover{text-decoration:underline}
+.crumbs .sep{opacity:.5}
+.ac{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-md);border:1px solid var(--border)}
+.a-hero{width:100%;max-height:480px;object-fit:cover;display:block;background:#f2ece1}
+.a-hero-fb{display:flex;align-items:center;justify-content:center;height:240px;background:linear-gradient(135deg,#f2ece1,#e8dec5);font-family:'Noto Serif Kannada',serif;font-size:48px;color:var(--brand);font-weight:800}
+.ab{padding:24px 22px 28px}
+@media(min-width:680px){.ab{padding:32px 36px}}
+.a-ctag{display:inline-block;background:var(--brand);color:#fff;font-size:11px;padding:5px 12px;border-radius:4px;font-weight:700;letter-spacing:.5px;margin-bottom:14px}
+.a-title{font-family:'Noto Serif Kannada',serif;font-size:24px;font-weight:800;line-height:1.4;color:var(--ink);margin-bottom:14px}
+@media(min-width:680px){.a-title{font-size:30px;line-height:1.35}}
+.a-byline{font-size:13px;color:#4a3f33;margin-bottom:16px;background:linear-gradient(90deg,#fdf5f0,transparent);border-left:3px solid var(--gold);padding:10px 14px;border-radius:0 8px 8px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.a-byline strong{color:var(--brand);font-weight:700}
+.a-meta{display:flex;gap:16px;font-size:12.5px;color:var(--muted);padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:22px;flex-wrap:wrap;align-items:center}
+.a-meta .views{color:var(--brand);font-weight:600}
+.blocks{display:flex;flex-direction:column;gap:20px}
+.b-txt{font-size:15.5px;line-height:1.95;color:#2a221b;text-align:justify;white-space:pre-wrap;word-wrap:break-word}
+.blocks > .b-txt:first-child::first-letter{font-family:'Noto Serif Kannada',serif;font-size:3em;line-height:.9;float:left;margin:6px 10px 0 0;color:var(--brand);font-weight:800}
+.b-img{border-radius:12px;overflow:hidden;box-shadow:var(--shadow-sm);border:1px solid var(--border)}
+.b-img img{width:100%;max-height:480px;object-fit:cover;display:block}
+.srow{display:flex;gap:10px;margin-top:26px;padding-top:20px;border-top:1px dashed var(--border);flex-wrap:wrap;align-items:center}
+.srow-lbl{font-size:12.5px;font-weight:700;color:var(--muted);margin-right:6px}
+.sbtn{padding:10px 16px;border-radius:999px;font-size:12.5px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:.2s;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.sbtn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.s-wa{background:#25d366;color:#fff}
+.s-cp{background:#f0ebe0;color:#3a3228}
+.s-sh{background:#1a73e8;color:#fff}
+.s-hm{background:var(--brand);color:#fff;margin-left:auto}
+.rlist{list-style:none;display:flex;flex-direction:column;gap:14px}
+.rlist li a{display:flex;gap:12px;align-items:flex-start;padding-bottom:14px;border-bottom:1px dashed var(--border)}
+.rlist li:last-child a{border-bottom:none;padding-bottom:0}
+.rl-img{width:84px;height:64px;min-width:84px;border-radius:8px;overflow:hidden;background:#f2ece1;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#c9bfae;font-family:'Noto Serif Kannada',serif;font-size:22px;font-weight:800}
+.rl-img img{width:100%;height:100%;object-fit:cover}
+.rl-body{flex:1;min-width:0}
+.rl-cat{font-size:10.5px;color:var(--brand);font-weight:700;letter-spacing:.3px;text-transform:uppercase}
+.rl-t{font-family:'Noto Serif Kannada',serif;font-size:13px;font-weight:700;line-height:1.4;color:var(--ink);margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:color .18s}
+.rlist li a:hover .rl-t{color:var(--brand)}
+.copy-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1410;color:#fff;padding:12px 22px;border-radius:999px;font-size:13px;font-weight:600;opacity:0;transition:.3s;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.25);pointer-events:none}
+.copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
-{% endblock %}
-
-{% block breaking %}
-<div class="brk">
-  <div class="brk-lbl">BREAKING</div>
-  <div class="brk-track">
-    <div class="brk-inner">
-      {% for n in recent %}<a href="{{ url_for('news_detail', nid=n.id) }}">{{ n.title }}</a>{% endfor %}
-      {% for n in recent %}<a href="{{ url_for('news_detail', nid=n.id) }}">{{ n.title }}</a>{% endfor %}
-    </div>
-  </div>
-</div>
 {% endblock %}
 
 {% block content %}
 <div class="aw">
-  <main>
-    <div class="ac">
-      {% if article.image %}
-      <img class="a-hero" src="{{ media_url(article.image) }}" alt="{{ article.title }}">
-      {% endif %}
-      <div class="ab">
-        <!-- Category tag -->
-        <span class="a-ctag">{{ article.category }}</span>
+  <article class="ac">
+    {% if article.image %}
+      <img src="{{ url_for('static', filename='uploads/'+article.image) }}" alt="{{ article.title }}" class="a-hero"
+           onerror="this.outerHTML='<div class=a-hero-fb>ಸುದ್ದಿ</div>'">
+    {% else %}
+      <div class="a-hero-fb">ಸುದ್ದಿ</div>
+    {% endif %}
 
-        <!-- Title -->
-        <h1 class="a-title">{{ article.title }}</h1>
-
-        <!-- EDITOR BYLINE — directly under title -->
-        <div class="a-byline">
-          <span>Editor &#9997;:</span>
-          <a href="tel:9448760070">ನರೇಂದ್ರಬಾಬು &nbsp;|&nbsp; 9448760070</a>
-        </div>
-
-        <!-- Date / views -->
-        <div class="a-meta">
-          <span>Last updated: {{ article.updated_at or article.created_at }}</span>
-          <span>&#128065; {{ article.views }} views</span>
-        </div>
-
-        <!-- Content blocks: text and image alternating -->
-        <div class="blocks">
-          {% for b in blocks %}
-            {% if b.type == 'text' %}
-              <p class="b-txt">{{ b.content | replace('\n','<br>') | safe }}</p>
-            {% elif b.type == 'image' %}
-              <figure class="b-img">
-                <img src="{{ media_url(b.content) }}"
-                     alt="ಚಿತ್ರ"
-                     onerror="this.closest('figure').style.display='none'">
-              </figure>
-            {% endif %}
-          {% endfor %}
-        </div>
-
-        <div class="srow">
-          <button class="sbtn s-wa" onclick="shareWA()">WhatsApp</button>
-          <button class="sbtn s-sh" onclick="shareNative()">Share</button>
-          <button class="sbtn s-cp" onclick="copyLink()">ಲಿಂಕ್ ಕಾಪಿ</button>
-          <a class="sbtn s-hm" href="{{ url_for('home') }}">ಮುಖಪುಟ</a>
-        </div>
+    <div class="ab">
+      <div class="crumbs">
+        <a href="{{ url_for('home') }}">ಮುಖಪುಟ</a>
+        <span class="sep">›</span>
+        <a href="{{ url_for('category', cat=article.category) }}">{{ article.category }}</a>
+        <span class="sep">›</span>
+        <span>ಸುದ್ದಿ</span>
       </div>
-    </div>
-  </main>
 
-  <aside class="sb">
-    <div class="sc">
-      <h3 class="sh">ಇತ್ತೀಚಿನ ಸುದ್ದಿ</h3>
-      <div class="rec">
-        {% for n in recent %}{% if n.id != article.id %}
-        <div class="ri" onclick="location.href='{{ url_for('news_detail', nid=n.id) }}'">
-          {% if n.image %}
-          <img class="ri-th" src="{{ media_url(n.image) }}" alt=""
-               onerror="this.style.background='#eee'">
-          {% else %}
-          <div class="ri-nth">&#128240;</div>
+      <span class="a-ctag">{{ article.category }}</span>
+      <h1 class="a-title">{{ article.title }}</h1>
+
+      <div class="a-byline">
+        ✍ <strong>ವರದಿ:</strong> ನರೇಂದ್ರ ಬಾಬು — ಹುಳಿಯಾರು
+      </div>
+
+      <div class="a-meta">
+        <span>🕐 {{ article.created_at }}</span>
+        <span class="views">👁 {{ article.views }} ವೀಕ್ಷಣೆ</span>
+        {% if article.breaking_news %}<span style="background:var(--brand);color:#fff;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:800;letter-spacing:.5px">ಬ್ರೇಕಿಂಗ್</span>{% endif %}
+      </div>
+
+      <div class="blocks">
+        {% for b in blocks %}
+          {% if b.type == 'text' %}
+            <div class="b-txt">{{ b.content }}</div>
+          {% elif b.type == 'image' %}
+            <div class="b-img"><img src="{{ url_for('static', filename='uploads/'+b.content) }}" alt=""></div>
           {% endif %}
-          <a class="ri-t" href="{{ url_for('news_detail', nid=n.id) }}">
-            {{ n.title[:65] }}{% if n.title|length>65 %}...{% endif %}
-          </a>
-        </div>
-        {% endif %}{% endfor %}
+        {% endfor %}
+      </div>
+
+      <div class="srow">
+        <span class="srow-lbl">ಹಂಚಿಕೊಳ್ಳಿ:</span>
+        <a href="https://wa.me/?text={{ article.title|urlencode }}%20{{ site_url }}/news/{{ article.id }}" target="_blank" class="sbtn s-wa">WhatsApp</a>
+        <button type="button" class="sbtn s-sh" onclick="navShare()">Share</button>
+        <button type="button" class="sbtn s-cp" onclick="copyLink()">Copy Link</button>
+        <a href="{{ url_for('home') }}" class="sbtn s-hm">← ಮುಖಪುಟ</a>
       </div>
     </div>
-    <div class="sc">
-      <h3 class="sh">ವಿಭಾಗಗಳು</h3>
+  </article>
+
+  <aside class="aside">
+    <div class="card-box">
+      <h3 class="box-title">📰 ಇತ್ತೀಚಿನ ಸುದ್ದಿ</h3>
+      <ul class="rlist">
+        {% for r in recent if r.id != article.id %}
+        <li>
+          <a href="{{ url_for('news_detail', nid=r.id) }}">
+            <div class="rl-img">
+              {% if r.image %}<img src="{{ url_for('static', filename='uploads/'+r.image) }}" alt="" onerror="this.outerHTML='ಸು'">{% else %}ಸು{% endif %}
+            </div>
+            <div class="rl-body">
+              <div class="rl-cat">{{ r.category }}</div>
+              <div class="rl-t">{{ r.title }}</div>
+            </div>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="cta-box">
+      <h3>WhatsApp ಗುಂಪಿಗೆ ಸೇರಿ</h3>
+      <p>ತಾಜಾ ಸುದ್ದಿಗಳನ್ನು ನೇರ ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಪಡೆಯಿರಿ.</p>
+      <a href="https://wa.me/919448760070" target="_blank">ಈಗಲೇ ಸೇರಿ</a>
+    </div>
+
+    <div class="card-box">
+      <h3 class="box-title">📂 ವಿಭಾಗಗಳು</h3>
       <ul class="clist">
         {% for cat in categories %}
-        <li><a href="{{ url_for('category', cat=cat) }}"><span>{{ cat }}</span><span style="color:var(--muted)">&#8250;</span></a></li>
+        <li><a href="{{ url_for('category', cat=cat) }}">{{ cat }}<span class="arr">›</span></a></li>
         {% endfor %}
       </ul>
     </div>
   </aside>
 </div>
+
+<div class="copy-toast" id="copyToast">✓ ಲಿಂಕ್ ನಕಲಿಸಲಾಗಿದೆ</div>
+
 <script>
-var PAGE_URL='{{ site_url }}/news/{{ article.id }}';
-var PAGE_TITLE={{ article.title|tojson }};
-function shareWA(){
-  window.open('https://wa.me/?text='+encodeURIComponent(PAGE_TITLE+'\n\n'+PAGE_URL));
-}
-function shareNative(){
-  if(navigator.share){
-    navigator.share({title:PAGE_TITLE, url:PAGE_URL}).catch(function(){});
-  } else {
-    window.open('https://wa.me/?text='+encodeURIComponent(PAGE_TITLE+'\n\n'+PAGE_URL));
-  }
+function showToast(msg){
+  var t=document.getElementById('copyToast');
+  if(msg)t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show')},1800);
 }
 function copyLink(){
+  var url=window.location.href;
   if(navigator.clipboard){
-    navigator.clipboard.writeText(PAGE_URL).then(function(){alert('ಲಿಂಕ್ ಕಾಪಿ ಆಗಿದೆ!');});
+    navigator.clipboard.writeText(url).then(function(){showToast('✓ ಲಿಂಕ್ ನಕಲಿಸಲಾಗಿದೆ')});
   } else {
-    prompt('ಲಿಂಕ್:',PAGE_URL);
+    var ta=document.createElement('textarea');ta.value=url;document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');showToast('✓ ಲಿಂಕ್ ನಕಲಿಸಲಾಗಿದೆ')}catch(e){}
+    document.body.removeChild(ta);
   }
+}
+function navShare(){
+  var data={title:document.title,url:window.location.href};
+  if(navigator.share){navigator.share(data).catch(function(){})}
+  else{copyLink()}
 }
 </script>
 {% endblock %}

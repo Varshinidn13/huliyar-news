@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, abort
-import sqlite3, os, uuid, re
+import sqlite3, os, uuid
 from datetime import datetime
+import pytz
 from werkzeug.utils import secure_filename
+from PIL import Image
 
 app = Flask(__name__)
 app.secret_key = 'huliyar_secret_2026_xK9p'
@@ -23,93 +25,20 @@ SITE_NAME = 'ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ'
 def allowed_file(f):
     return '.' in f and f.rsplit('.',1)[1].lower() in ALLOWED
 
-class MetadataService:
-    @staticmethod
-    def now():
-        return datetime.now().strftime('%d-%m-%Y %I:%M %p')
-
-metadata_service = MetadataService()
-
-def normalize_image_path(value):
-    """Keep image references stable and relative to the app/workspace root."""
-    if not value:
-        return None
-    value = value.replace('\\', '/').strip()
-    if value.startswith(('http://', 'https://', 'data:')):
-        return value
-    value = re.sub(r'^(\./|/)+', '', value)
-    value = re.sub(r'^(\.\./)+', '', value)
-    if value.startswith('static/uploads/'):
-        return value
-    return 'static/uploads/' + os.path.basename(value)
-
-def media_static_filename(value):
-    value = normalize_image_path(value)
-    if not value:
-        return ''
-    return value[len('static/'):] if value.startswith('static/') else value
-
-def media_url(value):
-    if not value:
-        return ''
-    if value.startswith(('http://', 'https://', 'data:')):
-        return value
-    return url_for('static', filename=media_static_filename(value))
-
-def public_media_url(value):
-    if not value:
-        return SITE_URL + '/static/logo.png'
-    if value.startswith(('http://', 'https://', 'data:')):
-        return value
-    return SITE_URL + '/' + normalize_image_path(value)
-
-def upload_abs_path(value):
-    value = normalize_image_path(value)
-    if not value or not value.startswith('static/uploads/'):
-        return None
-    return os.path.join(BASE_DIR, *value.split('/'))
-
-def strip_jpeg_metadata(path):
-    try:
-        with open(path, 'rb') as f:
-            data = f.read()
-        if len(data) < 4 or data[:2] != b'\xff\xd8':
-            return
-        chunks = [data[:2]]
-        offset = 2
-        while offset + 4 <= len(data):
-            if data[offset] != 0xff:
-                chunks.append(data[offset:])
-                break
-            marker = data[offset + 1]
-            if marker == 0xda:
-                chunks.append(data[offset:])
-                break
-            size = int.from_bytes(data[offset + 2:offset + 4], 'big')
-            end = offset + 2 + size
-            if size < 2 or end > len(data):
-                return
-            is_metadata = (0xe0 <= marker <= 0xef) or marker == 0xfe
-            if not is_metadata:
-                chunks.append(data[offset:end])
-            offset = end
-        optimized = b''.join(chunks)
-        if len(optimized) < len(data):
-            with open(path, 'wb') as f:
-                f.write(optimized)
-    except OSError:
-        return
-
-def save_uploaded_image(file_storage):
-    ext = file_storage.filename.rsplit('.',1)[1].lower()
-    fname = uuid.uuid4().hex + '.' + ext
-    abs_path = os.path.join(UPLOAD_DIR, fname)
-    file_storage.save(abs_path)
-    if os.path.getsize(abs_path) > 500 * 1024:
-        strip_jpeg_metadata(abs_path)
-    return normalize_image_path(fname)
-
-app.jinja_env.globals['media_url'] = media_url
+def save_compressed_image(file, folder, filename, max_size=(800, 600)):
+    """Save and compress image for WhatsApp preview optimization."""
+    img = Image.open(file)
+    # Convert to RGB if necessary (to save as JPEG)
+    if img.mode in ("RGBA", "P"):
+        img = img.convert("RGB")
+    
+    # Resize if larger than max_size while maintaining aspect ratio
+    img.thumbnail(max_size, Image.Resampling.LANCZOS)
+    
+    # Save with optimization
+    path = os.path.join(folder, filename)
+    img.save(path, "JPEG", optimize=True, quality=85)
+    return filename
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
@@ -126,7 +55,6 @@ def init_db():
         image         TEXT,
         views         INTEGER DEFAULT 0,
         created_at    TEXT NOT NULL,
-        updated_at    TEXT,
         breaking_news INTEGER DEFAULT 0
     )''')
     conn.execute('''CREATE TABLE IF NOT EXISTS content_blocks (
@@ -139,10 +67,6 @@ def init_db():
     conn.commit()
     # migrate old content column
     cols = [r[1] for r in conn.execute("PRAGMA table_info(news)").fetchall()]
-    if 'updated_at' not in cols:
-        conn.execute('ALTER TABLE news ADD COLUMN updated_at TEXT')
-        conn.execute('UPDATE news SET updated_at=created_at WHERE updated_at IS NULL')
-        conn.commit()
     if 'content' in cols:
         rows = conn.execute('SELECT id,content FROM news WHERE content IS NOT NULL').fetchall()
         for r in rows:
@@ -161,8 +85,7 @@ def init_db():
             ('ನಕಲಿ ಚಿನ್ನ ಮಾರಾಟ ಜಾಲ ಬಹಿರಂಗ: ಮೂವರು ಬಂಧನ','ಅಪರಾಧ',None,412,'05-04-2026 11:30 AM',1,'ನಕಲಿ ಚಿನ್ನ ಮಾರಾಟ ಜಾಲ ಬಹಿರಂಗ. ಪೊಲೀಸರು ಮೂವರನ್ನು ಬಂಧಿಸಿದ್ದಾರೆ.'),
         ]
         for s in seeds:
-            conn.execute('INSERT INTO news (title,category,image,views,created_at,updated_at,breaking_news) VALUES (?,?,?,?,?,?,?)',
-                         (s[0], s[1], normalize_image_path(s[2]) if s[2] else None, s[3], s[4], s[4], s[5]))
+            conn.execute('INSERT INTO news (title,category,image,views,created_at,breaking_news) VALUES (?,?,?,?,?,?)', s[:6])
             nid = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
             conn.execute('INSERT INTO content_blocks (news_id,position,type,content) VALUES (?,0,?,?)',(nid,'text',s[6]))
         conn.commit()
@@ -171,33 +94,29 @@ def init_db():
 def save_blocks(conn, nid, form, files):
     """Save content blocks from editor form for a given news id."""
     position = 0
-    indexes = set()
-    for key in list(form.keys()) + list(files.keys()):
-        m = re.match(r'^(?:content|block_image|existing_block_image)_(\d+)$', key)
-        if m:
-            indexes.add(int(m.group(1)))
-    used_images = set()
-    for idx in sorted(indexes):
+    idx = 0
+    while True:
         text_key  = 'content_{}'.format(idx)
         image_key = 'block_image_{}'.format(idx)
-        existing_key = 'existing_block_image_{}'.format(idx)
-        txt = form.get(text_key,'').strip()
-        if txt:
-            conn.execute('INSERT INTO content_blocks (news_id,position,type,content) VALUES (?,?,?,?)',
-                         (nid, position, 'text', txt))
-            position += 1
-        img_path = None
-        imgf = files.get(image_key)
-        if imgf and imgf.filename and allowed_file(imgf.filename):
-            img_path = save_uploaded_image(imgf)
-        elif form.get(existing_key):
-            img_path = normalize_image_path(form.get(existing_key))
-        if img_path:
-            used_images.add(img_path)
-            conn.execute('INSERT INTO content_blocks (news_id,position,type,content) VALUES (?,?,?,?)',
-                         (nid, position, 'image', img_path))
-            position += 1
-    return used_images
+        has_text  = text_key in form
+        has_image = image_key in files
+        if not has_text and not has_image:
+            break
+        if has_text:
+            txt = form.get(text_key,'').strip()
+            if txt:
+                conn.execute('INSERT INTO content_blocks (news_id,position,type,content) VALUES (?,?,?,?)',
+                             (nid, position, 'text', txt))
+                position += 1
+        if has_image:
+            imgf = files.get(image_key)
+            if imgf and imgf.filename and allowed_file(imgf.filename):
+                fname = uuid.uuid4().hex + '.jpg'
+                save_compressed_image(imgf, UPLOAD_DIR, fname)
+                conn.execute('INSERT INTO content_blocks (news_id,position,type,content) VALUES (?,?,?,?)',
+                             (nid, position, 'image', fname))
+                position += 1
+        idx += 1
 
 # ── ROUTES ──────────────────────────────────────────────────────────────────
 
@@ -234,7 +153,7 @@ def news_detail(nid):
     blocks  = conn.execute('SELECT * FROM content_blocks WHERE news_id=? ORDER BY position',(nid,)).fetchall()
     recent  = conn.execute('SELECT * FROM news ORDER BY id DESC LIMIT 7').fetchall()
     conn.close()
-    og_image = public_media_url(article['image'])
+    og_image = SITE_URL + ('/static/uploads/'+article['image'] if article['image'] else '/static/logo.png')
     return render_template('news_detail.html', article=article, blocks=blocks, recent=recent,
                            categories=CATEGORIES, og_image=og_image,
                            site_url=SITE_URL, site_name=SITE_NAME)
@@ -276,14 +195,17 @@ def editor_post():
         hero_img = None
         f = request.files.get('hero_image')
         if f and f.filename and allowed_file(f.filename):
-            hero_img = save_uploaded_image(f)
+            hero_img = uuid.uuid4().hex + '.jpg'
+            save_compressed_image(f, UPLOAD_DIR, hero_img)
         if not title:
             flash('error:ಶೀರ್ಷಿಕೆ ಬರೆಯಿರಿ')
             return render_template('editor_post.html', categories=CATEGORIES)
-        now = metadata_service.now()
+        # Set timezone to Asia/Kolkata (IST)
+        ist = pytz.timezone('Asia/Kolkata')
+        now = datetime.now(ist).strftime('%d-%m-%Y %I:%M %p')
         conn = get_db()
-        conn.execute('INSERT INTO news (title,category,image,views,created_at,updated_at,breaking_news) VALUES (?,?,?,0,?,?,?)',
-                     (title, category, hero_img, now, now, breaking_news))
+        conn.execute('INSERT INTO news (title,category,image,views,created_at,breaking_news) VALUES (?,?,?,0,?,?)',
+                     (title, category, hero_img, now, breaking_news))
         nid = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
         save_blocks(conn, nid, request.form, request.files)
         conn.commit()
@@ -305,31 +227,68 @@ def editor_edit(nid):
         category      = request.form.get('category','ಸ್ಥಳೀಯ')
         breaking_news = 1 if request.form.get('breaking_news') else 0
         # Handle hero image — keep old if no new uploaded
-        hero_img = normalize_image_path(article['image'])
+        hero_img = article['image']
         f = request.files.get('hero_image')
         if f and f.filename and allowed_file(f.filename):
-            old_hero = upload_abs_path(hero_img)
-            hero_img = save_uploaded_image(f)
-            if old_hero and os.path.exists(old_hero):
-                os.remove(old_hero)
+            # delete old hero
+            if hero_img:
+                old = os.path.join(UPLOAD_DIR, hero_img)
+                if os.path.exists(old): os.remove(old)
+            hero_img = uuid.uuid4().hex + '.jpg'
+            save_compressed_image(f, UPLOAD_DIR, hero_img)
         if not title:
             flash('error:ಶೀರ್ಷಿಕೆ ಬರೆಯಿರಿ')
             blocks = conn.execute('SELECT * FROM content_blocks WHERE news_id=? ORDER BY position',(nid,)).fetchall()
             conn.close()
             return render_template('editor_edit.html', article=article, blocks=blocks, categories=CATEGORIES)
-        now = metadata_service.now()
-        conn.execute('UPDATE news SET title=?,category=?,image=?,updated_at=?,breaking_news=? WHERE id=?',
-                     (title, category, hero_img, now, breaking_news, nid))
-        # Delete old blocks and re-save
-        old_imgs = {
-            normalize_image_path(oi['content'])
-            for oi in conn.execute('SELECT content FROM content_blocks WHERE news_id=? AND type=?',(nid,'image')).fetchall()
-        }
-        conn.execute('DELETE FROM content_blocks WHERE news_id=?',(nid,))
-        used_imgs = save_blocks(conn, nid, request.form, request.files)
-        for old_img in old_imgs - used_imgs:
-            p = upload_abs_path(old_img)
-            if p and os.path.exists(p): os.remove(p)
+        
+        conn.execute('UPDATE news SET title=?,category=?,image=?,breaking_news=? WHERE id=?',
+                     (title, category, hero_img, breaking_news, nid))
+
+        # Get existing blocks to handle images
+        existing_blocks = conn.execute('SELECT * FROM content_blocks WHERE news_id=? ORDER BY position', (nid,)).fetchall()
+        
+        # We will delete and re-save, but keep existing image filenames if no new file provided
+        conn.execute('DELETE FROM content_blocks WHERE news_id=?', (nid,))
+        
+        position = 0
+        idx = 0
+        while True:
+            text_key  = 'content_{}'.format(idx)
+            image_key = 'block_image_{}'.format(idx)
+            # Check if this block index exists in the submitted form
+            if text_key not in request.form and image_key not in request.files:
+                # Also check if it was an existing block that might only have an image
+                if idx >= len(existing_blocks):
+                    break
+            
+            txt = request.form.get(text_key, '').strip()
+            imgf = request.files.get(image_key)
+            
+            # Logic for image:
+            # 1. New file uploaded -> save it
+            # 2. No new file, but was an existing image block -> keep old filename
+            # 3. No new file, no old image -> no image
+            
+            saved_image = None
+            if imgf and imgf.filename and allowed_file(imgf.filename):
+                saved_image = uuid.uuid4().hex + '.jpg'
+                save_compressed_image(imgf, UPLOAD_DIR, saved_image)
+            elif idx < len(existing_blocks) and existing_blocks[idx]['type'] == 'image':
+                saved_image = existing_blocks[idx]['content']
+
+            if txt:
+                conn.execute('INSERT INTO content_blocks (news_id,position,type,content) VALUES (?,?,?,?)',
+                             (nid, position, 'text', txt))
+                position += 1
+            
+            if saved_image:
+                conn.execute('INSERT INTO content_blocks (news_id,position,type,content) VALUES (?,?,?,?)',
+                             (nid, position, 'image', saved_image))
+                position += 1
+                
+            idx += 1
+
         conn.commit()
         conn.close()
         flash('success:ಸುದ್ದಿ ಯಶಸ್ವಿಯಾಗಿ ಅಪ್ಡೇಟ್ ಆಗಿದೆ!')
@@ -345,12 +304,12 @@ def editor_delete(nid):
     conn = get_db()
     row = conn.execute('SELECT image FROM news WHERE id=?',(nid,)).fetchone()
     if row and row['image']:
-        p = upload_abs_path(row['image'])
-        if p and os.path.exists(p): os.remove(p)
+        p = os.path.join(UPLOAD_DIR, row['image'])
+        if os.path.exists(p): os.remove(p)
     imgs = conn.execute('SELECT content FROM content_blocks WHERE news_id=? AND type=?',(nid,'image')).fetchall()
     for i in imgs:
-        p = upload_abs_path(i['content'])
-        if p and os.path.exists(p): os.remove(p)
+        p = os.path.join(UPLOAD_DIR, i['content'])
+        if os.path.exists(p): os.remove(p)
     conn.execute('DELETE FROM content_blocks WHERE news_id=?',(nid,))
     conn.execute('DELETE FROM news WHERE id=?',(nid,))
     conn.commit()

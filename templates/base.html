@@ -9,135 +9,213 @@
 <meta property="og:title"        content="{% block og_title %}ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ{% endblock %}">
 <meta property="og:description"  content="{% block og_desc %}ಗ್ರಾಮೀಣ ಸುದ್ದಿ - ಸ್ಥಳೀಯ ಅಪ್ಡೇಟ್{% endblock %}">
 <meta property="og:image"        content="{% block og_image %}{{ site_url }}/static/logo.png{% endblock %}">
-<meta property="og:image:width"  content="600">
-<meta property="og:image:height" content="400">
+<meta property="og:image:type"   content="image/jpeg">
+<meta property="og:image:width"  content="800">
+<meta property="og:image:height" content="600">
 <meta property="og:url"          content="{% block og_url %}{{ site_url }}{% endblock %}">
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:title"       content="{% block tw_title %}ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ{% endblock %}">
 <meta name="twitter:description" content="{% block tw_desc %}ಗ್ರಾಮೀಣ ಸುದ್ದಿ{% endblock %}">
 <meta name="twitter:image"       content="{% block tw_img %}{{ site_url }}/static/logo.png{% endblock %}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;500;600;700;800&family=Noto+Serif+Kannada:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;500;600;700;800&family=Noto+Serif+Kannada:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{font-family:'Noto Sans Kannada',sans-serif;background:#f4f4ef;color:#1a1a1a}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+:root{
+  --brand:#b8321f;--brand-2:#7a1d11;--brand-3:#e25033;
+  --gold:#d4a142;--ink:#1a1410;--paper:#faf7f1;--card:#fff;
+  --muted:#6b6258;--border:#ece4d4;
+  --shadow-sm:0 1px 2px rgba(26,20,16,.06),0 2px 6px rgba(26,20,16,.05);
+  --shadow-md:0 4px 14px -4px rgba(122,29,17,.18),0 2px 6px rgba(26,20,16,.06);
+  --shadow-lg:0 18px 40px -16px rgba(122,29,17,.28);
+}
+body{font-family:'Noto Sans Kannada',sans-serif;background:var(--paper);color:var(--ink);
+  background-image:radial-gradient(rgba(184,50,31,.045) 1px,transparent 1px);background-size:22px 22px;line-height:1.55}
 a{text-decoration:none;color:inherit}
 img{max-width:100%;height:auto;display:block}
-:root{--red:#c0392b;--red2:#96281b;--gold:#e8a020;--navbg:#111827;--bg:#f4f4ef;--border:#e0e0e0;--muted:#666}
 
-/* HEADER */
-.hdr{background:linear-gradient(135deg,#c0392b,#7b1d12);padding:10px 13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.hdr-l{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
-.logo-ring{width:52px;height:52px;min-width:52px;background:#fff;border-radius:50%;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center}
+/* TOPBAR */
+.topbar{background:#1a1410;color:rgba(255,255,255,.7);font-size:11.5px}
+.topbar-in{max-width:1180px;margin:0 auto;padding:7px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.topbar a{color:#fff}
+.topbar .dot{width:5px;height:5px;border-radius:50%;background:var(--gold);display:inline-block;margin:0 8px;vertical-align:middle}
+.topbar .right{display:flex;align-items:center;gap:12px}
+.topbar .clk{color:#fff;font-weight:600;font-variant-numeric:tabular-nums}
+@media(max-width:560px){.topbar .hide-s{display:none}}
+
+/* MASTHEAD */
+.hdr{background:radial-gradient(800px 200px at 80% -50%,rgba(212,161,66,.35),transparent 70%),linear-gradient(135deg,var(--brand-2) 0%,var(--brand) 55%,var(--brand-3) 100%);color:#fff;position:relative;overflow:hidden}
+.hdr::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold) 20%,var(--gold) 80%,transparent);opacity:.7}
+.hdr-in{max-width:1180px;margin:0 auto;padding:18px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.hdr-l{display:flex;align-items:center;gap:14px;min-width:0;flex:1}
+.logo-ring{width:64px;height:64px;min-width:64px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.25);border:2px solid var(--gold)}
 .logo-ring img{width:100%;height:100%;object-fit:cover}
-.logo-fallback{font-size:22px;display:none}
-.hdr-txt h1{font-family:'Noto Serif Kannada',serif;font-size:15px;font-weight:800;color:#fff;line-height:1.25;text-shadow:1px 1px 2px rgba(0,0,0,.4)}
-.hdr-txt p{font-size:10px;color:rgba(255,255,255,.8);margin-top:2px}
-.hdr-r{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0}
-.hdr-clk{color:#fff;font-size:11px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
-.hdr-dt{color:rgba(255,255,255,.7);font-size:10px;white-space:nowrap}
-.hdr-ebtn{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);color:#fff;padding:3px 9px;border-radius:12px;font-size:10.5px;transition:.2s;margin-top:1px}
-.hdr-ebtn:hover{background:rgba(255,255,255,.28)}
-@media(min-width:600px){.hdr-txt h1{font-size:19px}.hdr-txt p{font-size:11.5px}.logo-ring{width:60px;height:60px;min-width:60px}}
+.logo-fallback{font-family:'Noto Serif Kannada',serif;font-size:24px;font-weight:800;display:none;color:var(--brand)}
+.hdr-txt h1{font-family:'Noto Serif Kannada',serif;font-size:22px;font-weight:800;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,.25)}
+.hdr-txt p{font-size:11.5px;color:rgba(255,255,255,.82);margin-top:4px;letter-spacing:.3px}
+.hdr-txt p .sep{color:var(--gold);margin:0 6px}
+.hdr-r{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.ebtn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.32);color:#fff;padding:8px 14px;border-radius:999px;font-size:12px;font-weight:600;transition:.2s}
+.ebtn:hover{background:rgba(255,255,255,.22)}
+@media(min-width:680px){.hdr-txt h1{font-size:30px}.hdr-txt p{font-size:13px}.logo-ring{width:72px;height:72px;min-width:72px}}
 
-/* NAV — ಅಪರಾಧ is styled SAME as all others, no special color */
-.nav{background:var(--navbg);overflow-x:auto;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+/* NAV */
+.nav-wrap{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:40;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+.nav{max-width:1180px;margin:0 auto;padding:0 8px;display:flex;align-items:center;gap:2px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .nav::-webkit-scrollbar{display:none}
-.nav a{display:inline-block;color:rgba(255,255,255,.78);padding:9px 12px;font-size:12.5px;font-weight:500;border-bottom:3px solid transparent;transition:.18s;white-space:nowrap}
-.nav a:hover,.nav a.on{color:#fff;border-bottom-color:var(--gold);background:rgba(255,255,255,.07)}
+.nav a{display:inline-block;padding:13px 16px;font-size:13.5px;font-weight:600;color:#4a3f33;white-space:nowrap;position:relative;transition:color .18s}
+.nav a::after{content:"";position:absolute;left:50%;right:50%;bottom:0;height:3px;background:var(--brand);border-radius:3px 3px 0 0;transition:left .25s,right .25s}
+.nav a:hover{color:var(--brand)}
+.nav a:hover::after,.nav a.on::after{left:14px;right:14px}
+.nav a.on{color:var(--brand)}
 
 /* BREAKING */
-.brk{background:var(--red);display:flex;align-items:stretch;overflow:hidden}
-.brk-lbl{background:#111;color:#fff;padding:0 11px;font-size:10px;font-weight:700;letter-spacing:.8px;white-space:nowrap;display:flex;align-items:center;flex-shrink:0}
-.brk-track{flex:1;overflow:hidden;display:flex;align-items:center}
-.brk-inner{display:flex;animation:scrl 50s linear infinite;width:max-content}
-.brk-inner a{color:#fff;font-size:12px;padding:8px 32px 8px 0;white-space:nowrap}
-.brk-inner a:hover{text-decoration:underline}
+.brk{background:linear-gradient(90deg,var(--brand) 0%,var(--brand-2) 100%);display:flex;align-items:stretch;overflow:hidden}
+.brk-lbl{background:#1a1410;color:#fff;padding:0 14px;font-size:11px;font-weight:800;letter-spacing:1px;white-space:nowrap;display:flex;align-items:center;gap:8px;position:relative}
+.brk-pulse{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 0 rgba(212,161,66,.7);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(212,161,66,.7)}70%{box-shadow:0 0 0 10px rgba(212,161,66,0)}100%{box-shadow:0 0 0 0 rgba(212,161,66,0)}}
+.brk-track{flex:1;overflow:hidden;display:flex;align-items:center;padding-left:18px}
+.brk-inner{display:flex;align-items:center;animation:scrl 55s linear infinite;width:max-content}
+.brk-inner a{color:#fff;font-size:13px;font-weight:500;padding:11px 28px 11px 0;white-space:nowrap;display:inline-flex;align-items:center;gap:10px}
+.brk-inner a::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--gold)}
+.brk-inner a:hover{text-decoration:underline;text-underline-offset:3px}
 @keyframes scrl{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* FLASH */
-.fm{padding:9px 13px;margin:9px 12px;border-radius:5px;font-size:12.5px;font-weight:600}
-.fm.ok{background:#d4edda;color:#155724;border:1px solid #c3e6cb}
-.fm.er{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb}
+.fm{max-width:1180px;margin:14px auto 0;padding:11px 16px;border-radius:10px;font-size:13.5px;font-weight:500}
+.fm.ok{background:#e8f5ea;color:#1b5e20;border-left:4px solid #2e7d32}
+.fm.er{background:#fdecea;color:#7a1d1d;border-left:4px solid var(--brand)}
 
 /* LAYOUT */
-.wrap{max-width:1060px;margin:0 auto;padding:12px;display:grid;grid-template-columns:1fr 275px;gap:14px}
-@media(max-width:750px){.wrap{grid-template-columns:1fr;padding:9px}}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 16px 40px;display:grid;grid-template-columns:1fr;gap:28px}
+@media(min-width:960px){.wrap{grid-template-columns:1fr 340px;gap:36px}}
 
-/* SECTION HEADING */
-.sh{font-family:'Noto Serif Kannada',serif;font-size:15.5px;font-weight:700;color:var(--red);border-left:4px solid var(--red);padding-left:9px;margin-bottom:11px}
+.sh{position:relative;font-family:'Noto Serif Kannada',serif;font-size:22px;font-weight:800;color:var(--ink);margin-bottom:18px;padding-bottom:12px}
+.sh::after{content:"";position:absolute;left:0;bottom:0;width:52px;height:3px;background:var(--brand);border-radius:2px}
+.sh::before{content:"";position:absolute;left:56px;bottom:1px;width:120px;height:1px;background:var(--border)}
 
-/* NEWS CARD */
-.ngrid{display:flex;flex-direction:column;gap:10px}
-.ncard{background:#fff;border-radius:7px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,.09);display:flex;cursor:pointer;transition:transform .15s,box-shadow .15s}
-.ncard:hover{transform:translateY(-2px);box-shadow:0 3px 12px rgba(0,0,0,.13)}
-.nc-img{width:120px;min-height:96px;flex-shrink:0;background:#ece8e8;overflow:hidden}
-.nc-img img{width:100%;height:100%;object-fit:cover;min-height:96px}
-.nc-noimg{width:100%;min-height:96px;background:linear-gradient(135deg,#f5e0de,#ead5d3);display:flex;align-items:center;justify-content:center;color:#c0392b;font-size:26px}
-.nc-body{padding:9px 10px;flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
-/* category tag — same red/white for ALL categories including ಅಪರಾಧ */
-.ctag{display:inline-block;background:var(--red);color:#fff;font-size:9.5px;padding:1px 6px;border-radius:3px;font-weight:700;letter-spacing:.2px;align-self:flex-start}
-.nc-title{font-family:'Noto Serif Kannada',serif;font-size:12.5px;font-weight:700;line-height:1.5;color:#111;flex:1}
-.nc-meta{font-size:10.5px;color:var(--muted);display:flex;gap:7px;flex-wrap:wrap}
-.nc-acts{display:flex;gap:5px;flex-wrap:wrap}
-.abtn{background:none;border:1px solid var(--border);border-radius:3px;padding:2px 7px;font-size:10px;color:var(--muted);cursor:pointer;transition:.15s;font-family:inherit;white-space:nowrap}
-.abtn:hover{background:var(--red);color:#fff;border-color:var(--red)}
-@media(max-width:460px){.nc-img{width:95px;min-height:84px}.nc-img img{min-height:84px}.nc-noimg{min-height:84px}.nc-title{font-size:12px}}
+/* GRID + CARDS */
+.ngrid{display:grid;grid-template-columns:1fr;gap:18px}
+@media(min-width:600px){.ngrid{grid-template-columns:repeat(2,1fr)}}
+.ncard{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .25s,box-shadow .25s;display:flex;flex-direction:column;border:1px solid var(--border)}
+.ncard:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.nc-img{position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;background:#f2ece1}
+.nc-img img{width:100%;height:100%;object-fit:cover;transition:transform .55s ease}
+.ncard:hover .nc-img img{transform:scale(1.06)}
+.nc-noimg{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-family:'Noto Serif Kannada',serif;font-size:42px;color:#c9bfae;font-weight:800}
+.ctag{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.96);color:var(--brand);font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;letter-spacing:.3px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.brk-pin{position:absolute;top:12px;right:12px;background:var(--brand);color:#fff;font-size:10px;font-weight:800;padding:4px 9px;border-radius:4px;letter-spacing:.5px}
+.nc-body{padding:16px;display:flex;flex-direction:column;flex:1}
+.nc-title{font-family:'Noto Serif Kannada',serif;font-size:16px;font-weight:700;line-height:1.4;color:var(--ink);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;transition:color .2s}
+.ncard:hover .nc-title{color:var(--brand)}
+.nc-meta{margin-top:14px;padding-top:10px;border-top:1px dashed var(--border);display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--muted)}
+.nc-meta .views{display:inline-flex;align-items:center;gap:4px;font-weight:600;color:var(--brand)}
+
+/* FEATURED */
+.featured{grid-column:1 / -1;background:var(--card);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;border:1px solid var(--border)}
+@media(min-width:720px){.featured{flex-direction:row;min-height:360px}}
+.featured .ft-img{position:relative;flex:1.4;min-height:240px;overflow:hidden;background:#f2ece1}
+.featured .ft-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.featured:hover .ft-img img{transform:scale(1.04)}
+.featured .ft-body{flex:1;padding:24px 22px;display:flex;flex-direction:column;justify-content:center;gap:12px}
+.featured .ft-ctag{display:inline-block;align-self:flex-start;background:var(--brand);color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:4px;letter-spacing:.5px}
+.featured .ft-title{font-family:'Noto Serif Kannada',serif;font-size:22px;font-weight:800;line-height:1.35;color:var(--ink)}
+@media(min-width:720px){.featured .ft-title{font-size:28px}}
+.featured:hover .ft-title{color:var(--brand)}
+.featured .ft-meta{display:flex;gap:14px;font-size:12.5px;color:var(--muted);align-items:center;flex-wrap:wrap}
+.featured .ft-meta .views{color:var(--brand);font-weight:600}
+
+.empty{padding:60px 20px;text-align:center;color:var(--muted);background:var(--card);border-radius:14px;border:1px dashed var(--border)}
 
 /* SIDEBAR */
-.sb{display:flex;flex-direction:column;gap:13px}
-.sc{background:#fff;border-radius:7px;padding:12px;box-shadow:0 1px 5px rgba(0,0,0,.09)}
-.tlist{list-style:none}
-.ti{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0f0;cursor:pointer;align-items:flex-start}
-.ti:last-child{border-bottom:none;padding-bottom:0}
-.tnum{width:20px;height:20px;min-width:20px;background:var(--red);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;margin-top:1px}
-.tnum.gd{background:var(--gold);color:#333}
-.tinfo a{font-size:11.5px;font-weight:600;color:#111;line-height:1.4;display:block}
-.tinfo a:hover{color:var(--red)}
-.tmeta{font-size:10px;color:var(--muted);margin-top:1px}
-.clist{list-style:none;display:flex;flex-direction:column;gap:4px}
-.clist li a{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--bg);border-radius:4px;font-size:12.5px;font-weight:500;transition:.15s;border-left:3px solid transparent}
-.clist li a:hover{background:#fde8e6;border-left-color:var(--red);color:var(--red)}
+.aside{display:flex;flex-direction:column;gap:22px}
+.card-box{background:var(--card);border-radius:14px;padding:20px;box-shadow:var(--shadow-sm);border:1px solid var(--border)}
+.box-title{font-family:'Noto Serif Kannada',serif;font-size:18px;font-weight:800;color:var(--ink);margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--brand);display:inline-flex;align-items:center;gap:8px}
+
+.tlist{list-style:none;display:flex;flex-direction:column;gap:14px}
+.tlist li a{display:flex;gap:14px;align-items:flex-start}
+.tnum{font-family:'Noto Serif Kannada',serif;font-size:28px;font-weight:900;line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--brand);min-width:34px;transition:.2s}
+.tlist li:hover .tnum{color:var(--brand)}
+.tbody{flex:1;min-width:0}
+.ttitle{font-size:13px;font-weight:600;line-height:1.45;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:color .18s}
+.tlist li:hover .ttitle{color:var(--brand)}
+.tmeta{font-size:11px;color:var(--muted);margin-top:4px;display:flex;gap:10px;align-items:center}
+.tmeta .cdot{color:var(--brand);font-weight:700}
+
+.clist{list-style:none;display:flex;flex-direction:column;gap:6px}
+.clist li a{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--paper);border-radius:8px;font-size:13px;font-weight:600;transition:.18s;border-left:3px solid transparent}
+.clist li a:hover{background:#fdebe7;border-left-color:var(--brand);color:var(--brand);transform:translateX(2px)}
+.clist li a .arr{color:var(--muted);font-size:14px;transition:.18s}
+.clist li a:hover .arr{color:var(--brand)}
+
+.cta-box{background:linear-gradient(135deg,var(--brand-2),var(--brand));color:#fff;border-radius:14px;padding:24px;text-align:center;box-shadow:var(--shadow-md);position:relative;overflow:hidden}
+.cta-box::before{content:"";position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(212,161,66,.18)}
+.cta-box h3{font-family:'Noto Serif Kannada',serif;font-size:18px;font-weight:800;position:relative}
+.cta-box p{font-size:12.5px;opacity:.9;margin:8px 0 16px;position:relative}
+.cta-box a{display:inline-block;background:var(--gold);color:#1a1410;font-weight:700;padding:10px 22px;border-radius:999px;font-size:13px;position:relative;transition:.2s}
+.cta-box a:hover{filter:brightness(1.08)}
 
 /* FOOTER */
-.ft{background:#111;color:rgba(255,255,255,.75);text-align:center;padding:18px 13px;margin-top:22px}
-.ft-soc{display:flex;justify-content:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
-.ft-soc a{color:#fff;background:rgba(255,255,255,.1);padding:6px 12px;border-radius:14px;font-size:12px;transition:.2s}
-.ft-soc a:hover{background:var(--red)}
-.ft p{font-size:12px;margin-bottom:3px}
-.ft a{color:var(--gold)}
-.ft-copy{font-size:10px;color:rgba(255,255,255,.33);margin-top:6px}
+.ft{background:#1a1410;color:rgba(255,255,255,.72);margin-top:30px;border-top:3px solid var(--gold)}
+.ft-in{max-width:1180px;margin:0 auto;padding:36px 16px 18px;display:grid;grid-template-columns:1fr;gap:28px}
+@media(min-width:680px){.ft-in{grid-template-columns:1.4fr 1fr 1fr}}
+.ft-brand h3{font-family:'Noto Serif Kannada',serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:8px}
+.ft-brand p{font-size:13px;line-height:1.7}
+.ft-brand .accent{color:var(--gold)}
+.ft-h{font-family:'Noto Serif Kannada',serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;position:relative;padding-bottom:8px}
+.ft-h::after{content:"";position:absolute;left:0;bottom:0;width:30px;height:2px;background:var(--gold)}
+.ft-links{list-style:none;display:flex;flex-direction:column;gap:9px}
+.ft-links a{font-size:13px;transition:.18s}
+.ft-links a:hover{color:var(--gold);padding-left:4px}
+.ft-soc{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.ft-soc a{background:rgba(255,255,255,.08);padding:8px 14px;border-radius:999px;font-size:12px;font-weight:600;color:#fff;transition:.2s;border:1px solid rgba(255,255,255,.1)}
+.ft-soc a:hover{background:var(--brand);border-color:var(--brand)}
+.ft-bot{max-width:1180px;margin:0 auto;padding:14px 16px;border-top:1px solid rgba(255,255,255,.08);font-size:11.5px;color:rgba(255,255,255,.5);display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center}
+.ft-bot a{color:var(--gold)}
 </style>
 {% block xhead %}{% endblock %}
 </head>
 <body>
 
-<header class="hdr">
-  <div class="hdr-l">
-    <div class="logo-ring">
-      <img src="{{ url_for('static', filename='logo.png') }}?v={{ range(9999)|random }}" alt="Logo"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-      <span class="logo-fallback">&#128240;</span>
-    </div>
-    <div class="hdr-txt">
-      <h1>ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ</h1>
-      <p>ಗ್ರಾಮೀಣ ಸುದ್ದಿ &bull; ಸ್ಥಳೀಯ ಅಪ್ಡೇಟ್</p>
+<div class="topbar">
+  <div class="topbar-in">
+    <div><span id="hdt"></span><span class="dot hide-s"></span><span class="hide-s">ಗ್ರಾಮೀಣ ಭಾರತದ ಧ್ವನಿ</span></div>
+    <div class="right">
+      <span class="clk" id="clk"></span>
+      <a href="tel:9448760070" class="hide-s">📞 9448760070</a>
     </div>
   </div>
-  <div class="hdr-r">
-    <span class="hdr-clk" id="clk"></span>
-    <span class="hdr-dt"  id="hdt"></span>
-    <a href="{{ url_for('editor_login') }}" class="hdr-ebtn">&#9998; Editor</a>
+</div>
+
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="hdr-l">
+      <div class="logo-ring">
+        <img src="{{ url_for('static', filename='logo.png') }}?v={{ range(9999)|random }}" alt="Logo"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <span class="logo-fallback">ಹು</span>
+      </div>
+      <div class="hdr-txt">
+        <h1>ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ</h1>
+        <p>ಗ್ರಾಮೀಣ ಸುದ್ದಿ<span class="sep">•</span>ಸ್ಥಳೀಯ ಅಪ್ಡೇಟ್<span class="sep">•</span>ನಂಬಿಕೆಯ ವಾಣಿ</p>
+      </div>
+    </div>
+    <div class="hdr-r">
+      <a href="{{ url_for('editor_login') }}" class="ebtn">✎ Editor</a>
+    </div>
   </div>
 </header>
 
-<nav class="nav">
-  <a href="{{ url_for('home') }}" {% if not active_cat %}class="on"{% endif %}>ಮುಖಪುಟ</a>
-  {% for cat in categories %}
-  <a href="{{ url_for('category', cat=cat) }}" {% if active_cat==cat %}class="on"{% endif %}>{{ cat }}</a>
-  {% endfor %}
-</nav>
+<div class="nav-wrap">
+  <nav class="nav">
+    <a href="{{ url_for('home') }}" {% if not active_cat %}class="on"{% endif %}>ಮುಖಪುಟ</a>
+    {% for cat in categories %}
+    <a href="{{ url_for('category', cat=cat) }}" {% if active_cat==cat %}class="on"{% endif %}>{{ cat }}</a>
+    {% endfor %}
+  </nav>
+</div>
 
 {% block breaking %}{% endblock %}
 
@@ -151,13 +229,40 @@ img{max-width:100%;height:auto;display:block}
 {% block content %}{% endblock %}
 
 <footer class="ft">
-  <div class="ft-soc">
-    <a href="https://www.facebook.com/share/g/189BVq5vVs/" target="_blank">Facebook</a>
-    <a href="https://youtube.com/@huliyarbabu" target="_blank">YouTube</a>
+  <div class="ft-in">
+    <div class="ft-brand">
+      <h3>ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ</h3>
+      <p>ಗ್ರಾಮೀಣ ಭಾರತದ ಧ್ವನಿ. ಪ್ರತಿ ಮನೆಗೂ ತಲುಪುವ ಸ್ಥಳೀಯ ಸುದ್ದಿ.</p>
+      <p style="margin-top:10px"><span class="accent">ವರದಿ:</span> ನರೇಂದ್ರ ಬಾಬು — ಹುಳಿಯಾರು</p>
+      <p><span class="accent">ಸಂಪರ್ಕ:</span> <a href="tel:9448760070" style="color:#fff">9448760070</a></p>
+      <div class="ft-soc">
+        <a href="https://www.facebook.com/share/g/189BVq5vVs/" target="_blank">Facebook</a>
+        <a href="https://youtube.com/@huliyarbabu" target="_blank">YouTube</a>
+        <a href="https://wa.me/919448760070" target="_blank">WhatsApp</a>
+      </div>
+    </div>
+    <div>
+      <h4 class="ft-h">ವಿಭಾಗಗಳು</h4>
+      <ul class="ft-links">
+        {% for cat in categories[:6] %}
+        <li><a href="{{ url_for('category', cat=cat) }}">{{ cat }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div>
+      <h4 class="ft-h">ಉಪಯುಕ್ತ ಲಿಂಕ್‌ಗಳು</h4>
+      <ul class="ft-links">
+        <li><a href="{{ url_for('home') }}">ಮುಖಪುಟ</a></li>
+        <li><a href="{{ url_for('editor_login') }}">ಎಡಿಟರ್ ಲಾಗಿನ್</a></li>
+        <li><a href="tel:9448760070">ನಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಿ</a></li>
+        <li><a href="https://wa.me/919448760070" target="_blank">WhatsApp ಗುಂಪು</a></li>
+      </ul>
+    </div>
   </div>
-  <p>ವರದಿ : ನರೇಂದ್ರ ಬಾಬು &mdash; ಹುಳಿಯಾರು</p>
-  <p><a href="tel:9448760070">9448760070</a></p>
-  <p class="ft-copy">&copy; 2026 ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ. All rights reserved.</p>
+  <div class="ft-bot">
+    <span>&copy; 2026 ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ. ಎಲ್ಲ ಹಕ್ಕುಗಳು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.</span>
+    <span>ವಿನ್ಯಾಸ ಪ್ರೀತಿಯಿಂದ <span style="color:var(--brand)">❤</span></span>
+  </div>
 </footer>
 
 <script>
@@ -168,7 +273,10 @@ img{max-width:100%;height:auto;display:block}
     var c=document.getElementById('clk');
     if(c)c.textContent=hh+':'+('0'+m).slice(-2)+':'+('0'+s).slice(-2)+' '+ap;
     var d=document.getElementById('hdt');
-    if(d)d.textContent=('0'+n.getDate()).slice(-2)+'/'+ ('0'+(n.getMonth()+1)).slice(-2)+'/'+n.getFullYear();
+    if(d){
+      var days=['ಭಾನುವಾರ','ಸೋಮವಾರ','ಮಂಗಳವಾರ','ಬುಧವಾರ','ಗುರುವಾರ','ಶುಕ್ರವಾರ','ಶನಿವಾರ'];
+      d.textContent=days[n.getDay()]+', '+('0'+n.getDate()).slice(-2)+'/'+('0'+(n.getMonth()+1)).slice(-2)+'/'+n.getFullYear();
+    }
   }
   tick();setInterval(tick,1000);
 })();

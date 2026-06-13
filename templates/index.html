@@ -2,8 +2,9 @@
 {% block title %}{% if active_cat %}{{ active_cat }} - {% endif %}ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ{% endblock %}
 
 {% block breaking %}
+{% if breaking or news %}
 <div class="brk">
-  <div class="brk-lbl">BREAKING</div>
+  <div class="brk-lbl"><span class="brk-pulse"></span>BREAKING</div>
   <div class="brk-track">
     <div class="brk-inner">
       {% set brk_items = breaking if breaking else news %}
@@ -12,134 +13,80 @@
     </div>
   </div>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block content %}
 <div class="wrap">
   <main>
     <h2 class="sh">{% if active_cat %}{{ active_cat }} ಸುದ್ದಿ{% else %}ಇತ್ತೀಚಿನ ಸುದ್ದಿ{% endif %}</h2>
+    {% if news %}
     <div class="ngrid">
       {% for n in news %}
-      <div class="ncard">
-        <!-- Clickable area -->
-        <a href="{{ url_for('news_detail', nid=n.id) }}"
-           style="display:flex;flex:1;min-width:0;text-decoration:none;color:inherit">
-          <div class="nc-img">
-            {% if n.image %}
-            <img src="{{ media_url(n.image) }}"
-                 alt="{{ n.title }}"
-                 onerror="this.parentElement.innerHTML='<div class=nc-noimg>&#128240;</div>'">
-            {% else %}
-            <div class="nc-noimg">&#128240;</div>
-            {% endif %}
+        {% if loop.first and not active_cat %}
+        <a href="{{ url_for('news_detail', nid=n.id) }}" class="featured">
+          <div class="ft-img">
+            {% if n.image %}<img src="{{ url_for('static', filename='uploads/'+n.image) }}" alt="{{ n.title }}" onerror="this.parentElement.innerHTML='<div class=nc-noimg>ಸು</div>'">
+            {% else %}<div class="nc-noimg">ಸು</div>{% endif %}
+            {% if n.breaking_news %}<span class="brk-pin">ಬ್ರೇಕಿಂಗ್</span>{% endif %}
           </div>
-          <div class="nc-body">
-            <span class="ctag">{{ n.category }}</span>
-            <span class="nc-title">{{ n.title }}</span>
-            <div class="nc-meta">
-              <span>{{ n.updated_at or n.created_at }}</span>
-              <span>&#128065; {{ n.views }}</span>
-            </div>
+          <div class="ft-body">
+            <span class="ft-ctag">{{ n.category }}</span>
+            <h3 class="ft-title">{{ n.title }}</h3>
+            <div class="ft-meta"><span>🕐 {{ n.created_at }}</span><span class="views">👁 {{ n.views }} ವೀಕ್ಷಣೆ</span></div>
           </div>
         </a>
-        <!-- Share buttons: WhatsApp | Share | Copy -->
-        <div style="padding:0 10px 9px;display:flex;gap:6px;flex-wrap:wrap">
-          <button class="abtn"
-            onclick="doWA(this)"
-            data-url="{{ site_url }}/news/{{ n.id }}"
-            data-title="{{ n.title | e }}">
-            WhatsApp
-          </button>
-          <button class="abtn"
-            onclick="doShare(this)"
-            data-url="{{ site_url }}/news/{{ n.id }}"
-            data-title="{{ n.title | e }}">
-            Share
-          </button>
-          <button class="abtn"
-            onclick="doCopy(this)"
-            data-url="{{ site_url }}/news/{{ n.id }}">
-            Copy
-          </button>
-        </div>
-      </div>
-      {% else %}
-      <p style="text-align:center;padding:38px;color:var(--muted);font-size:13px">
-        ಈ ವಿಭಾಗದಲ್ಲಿ ಇನ್ನೂ ಯಾವುದೇ ಸುದ್ದಿ ಇಲ್ಲ.
-      </p>
+        {% else %}
+        <a href="{{ url_for('news_detail', nid=n.id) }}" class="ncard">
+          <div class="nc-img">
+            {% if n.image %}<img src="{{ url_for('static', filename='uploads/'+n.image) }}" alt="{{ n.title }}" onerror="this.parentElement.innerHTML='<div class=nc-noimg>ಸು</div>'">
+            {% else %}<div class="nc-noimg">ಸು</div>{% endif %}
+            <span class="ctag">{{ n.category }}</span>
+            {% if n.breaking_news %}<span class="brk-pin">ಬ್ರೇಕಿಂಗ್</span>{% endif %}
+          </div>
+          <div class="nc-body">
+            <h3 class="nc-title">{{ n.title }}</h3>
+            <div class="nc-meta"><span>🕐 {{ n.created_at }}</span><span class="views">👁 {{ n.views }}</span></div>
+          </div>
+        </a>
+        {% endif %}
       {% endfor %}
     </div>
+    {% else %}
+    <div class="empty"><p>ಯಾವುದೇ ಸುದ್ದಿ ಇಲ್ಲ</p></div>
+    {% endif %}
   </main>
 
-  <aside class="sb">
-    <div class="sc">
-      <h3 class="sh">ಟ್ರೆಂಡಿಂಗ್ ಸುದ್ದಿ</h3>
+  <aside class="aside">
+    <div class="card-box">
+      <h3 class="box-title">🔥 ಟ್ರೆಂಡಿಂಗ್ ಸುದ್ದಿ</h3>
       <ul class="tlist">
-        {% for n in trending %}
-        <li class="ti" onclick="location.href='{{ url_for('news_detail', nid=n.id) }}'">
-          <div class="tnum {% if loop.index<=3 %}gd{% endif %}">{{ loop.index }}</div>
-          <div class="tinfo">
-            <a href="{{ url_for('news_detail', nid=n.id) }}">
-              {{ n.title[:60] }}{% if n.title|length>60 %}...{% endif %}
-            </a>
-            <div class="tmeta">{{ n.category }} &bull; {{ n.views }} views</div>
-          </div>
-        </li>
-        {% endfor %}
-      </ul>
-    </div>
-    <div class="sc">
-      <h3 class="sh">ವಿಭಾಗಗಳು</h3>
-      <ul class="clist">
-        {% for cat in categories %}
+        {% for n in trending[:6] %}
         <li>
-          <a href="{{ url_for('category', cat=cat) }}">
-            <span>{{ cat }}</span>
-            <span style="color:var(--muted)">&#8250;</span>
+          <a href="{{ url_for('news_detail', nid=n.id) }}">
+            <span class="tnum">{{ '%02d' % loop.index }}</span>
+            <span class="tbody">
+              <span class="ttitle">{{ n.title }}</span>
+              <span class="tmeta"><span class="cdot">{{ n.category }}</span><span>•</span><span>👁 {{ n.views }}</span></span>
+            </span>
           </a>
         </li>
         {% endfor %}
       </ul>
     </div>
+    <div class="cta-box">
+      <h3>WhatsApp ನಲ್ಲಿ ಸುದ್ದಿ</h3>
+      <p>ಪ್ರತಿದಿನ ಹುಳಿಯಾರಿನ ತಾಜಾ ಸುದ್ದಿಗಳನ್ನು ನೇರ ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಪಡೆಯಿರಿ.</p>
+      <a href="https://wa.me/919448760070" target="_blank">ಈಗಲೇ ಸೇರಿ</a>
+    </div>
+    <div class="card-box">
+      <h3 class="box-title">📂 ವಿಭಾಗಗಳು</h3>
+      <ul class="clist">
+        {% for cat in categories %}
+        <li><a href="{{ url_for('category', cat=cat) }}">{{ cat }}<span class="arr">›</span></a></li>
+        {% endfor %}
+      </ul>
+    </div>
   </aside>
 </div>
-
-<script>
-// WhatsApp direct share
-function doWA(btn) {
-  var url   = btn.getAttribute('data-url');
-  var title = btn.getAttribute('data-title');
-  window.open('https://wa.me/?text=' + encodeURIComponent(title + '\n\n' + url));
-}
-
-// Native share sheet (shows all apps: WhatsApp, Telegram, Instagram, Gmail etc.)
-// Falls back to WhatsApp on unsupported browsers
-function doShare(btn) {
-  var url   = btn.getAttribute('data-url');
-  var title = btn.getAttribute('data-title');
-  if (navigator.share) {
-    navigator.share({ title: title, url: url })
-      .catch(function(){});
-  } else {
-    // fallback: open WhatsApp share
-    window.open('https://wa.me/?text=' + encodeURIComponent(title + '\n\n' + url));
-  }
-}
-
-// Copy link
-function doCopy(btn) {
-  var url = btn.getAttribute('data-url');
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(url).then(function() {
-      var orig = btn.textContent;
-      btn.textContent = 'Copied!';
-      btn.style.background = '#27ae60';
-      btn.style.color = '#fff';
-      setTimeout(function(){ btn.textContent = orig; btn.style.background=''; btn.style.color=''; }, 1500);
-    });
-  } else {
-    prompt('ಲಿಂಕ್ ಕಾಪಿ ಮಾಡಿ:', url);
-  }
-}
-</script>
 {% endblock %}

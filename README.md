@@ -52,15 +52,10 @@
 git clone https://github.com/Varshinidn13/huliyar-news.git
 cd huliyar-news
 
-# 2. Create virtual environment
-python -m venv venv
-source venv/bin/activate    # Linux/Mac
-venv\Scripts\activate       # Windows
+# 2. Install dependencies
+pip install flask pillow pytz
 
-# 3. Install Flask
-pip install flask
-
-# 4. Run
+# 3. Run
 python app.py
 ```
 
@@ -76,7 +71,6 @@ Then open `http://127.0.0.1:5000` in your browser.
 ├── .gitignore
 ├── requirements.txt
 ├── static/
-│   ├── image-compress.js
 │   ├── logo.png
 │   └── uploads/        # Uploaded images
 ├── templates/
