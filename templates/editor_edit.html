@@ -256,6 +256,13 @@ document.addEventListener('mouseup',saveSelection);
 document.addEventListener('touchend',function(e){
   if(!e.target.closest||!e.target.closest('.editor-vtb'))saveSelection();
 });
+document.addEventListener('paste',function(e){
+  var ed=e.target.closest('.editor-editable');
+  if(!ed)return;
+  e.preventDefault();
+  var text=(e.clipboardData||window.clipboardData).getData('text/plain');
+  if(text)document.execCommand('insertText',false,text);
+});
 
 function applyFormat(format,value){
   if(!lastEd||!savedRange)return;
@@ -299,11 +306,36 @@ function applyFormat(format,value){
 function fmtBold(){applyFormat('bold');}
 function fmtColor(c){applyFormat('color',c);}
 
+function cleanContent(html){
+  var tmp=document.createElement('div');
+  tmp.innerHTML=html;
+  var els=tmp.querySelectorAll('*');
+  for(var i=0;i<els.length;i++){
+    if(els[i].tagName==='SPAN'&&els[i].style.color){
+      var c=els[i].style.color;
+      els[i].removeAttribute('style');
+      els[i].style.color=c;
+    }else{
+      els[i].removeAttribute('style');
+    }
+  }
+  var spans=tmp.querySelectorAll('span');
+  for(i=0;i<spans.length;i++){
+    if(!spans[i].getAttribute('style')){
+      var p=spans[i].parentNode;
+      while(spans[i].firstChild)p.insertBefore(spans[i].firstChild,spans[i]);
+      p.removeChild(spans[i]);
+      i--;
+    }
+  }
+  return tmp.innerHTML;
+}
+
 document.getElementById('editForm').onsubmit=function(){
   var eds=document.querySelectorAll('.editor-editable');
   for(var i=0;i<eds.length;i++){
     var id=eds[i].id.replace('ed_','');
-    document.getElementById('hd_'+id).value=eds[i].innerHTML;
+    document.getElementById('hd_'+id).value=cleanContent(eds[i].innerHTML);
   }
 };
 </script>
