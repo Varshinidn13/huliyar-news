@@ -31,9 +31,10 @@
 .a-meta .views{color:var(--brand);font-weight:600}
 .blocks{display:flex;flex-direction:column;gap:20px}
 .b-txt{font-size:15.5px;line-height:1.95;color:#2a221b;text-align:justify;white-space:pre-wrap;word-wrap:break-word}
-.blocks > .b-txt:first-child::first-letter{font-family:'Noto Serif Kannada',serif;font-size:3em;line-height:.9;float:left;margin:6px 10px 0 0;color:var(--brand);font-weight:800}
+.fl{font-family:'Noto Serif Kannada',serif;font-size:3em;line-height:.9;float:left;margin:6px 10px 0 0;color:var(--brand);font-weight:800;display:inline-block}
 .b-img{border-radius:12px;overflow:hidden;box-shadow:var(--shadow-sm);border:1px solid var(--border)}
 .b-img img{width:100%;max-height:480px;object-fit:cover;display:block}
+.b-cap{padding:8px 12px;font-size:12px;color:#5a4a3a;font-style:italic;background:#faf6f0;border-top:1px solid var(--border);line-height:1.5}
 .srow{display:flex;gap:10px;margin-top:26px;padding-top:20px;border-top:1px dashed var(--border);flex-wrap:wrap;align-items:center}
 .srow-lbl{font-size:12.5px;font-weight:700;color:var(--muted);margin-right:6px}
 .sbtn{padding:10px 16px;border-radius:999px;font-size:12.5px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:.2s;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
@@ -91,9 +92,12 @@
       <div class="blocks">
         {% for b in blocks %}
           {% if b.type == 'text' %}
-            <div class="b-txt">{{ b.content }}</div>
+            <div class="b-txt">{{ b.content | safe }}</div>
           {% elif b.type == 'image' %}
-            <div class="b-img"><img src="{{ url_for('static', filename='uploads/'+b.content) }}" alt=""></div>
+            <div class="b-img">
+              <img src="{{ url_for('static', filename='uploads/'+b.content) }}" alt="">
+              {% if b.caption %}<div class="b-cap">{{ b.caption }}</div>{% endif %}
+            </div>
           {% endif %}
         {% endfor %}
       </div>
@@ -169,5 +173,49 @@ function navShare(){
   if(navigator.share){navigator.share(data).catch(function(){})}
   else{copyLink()}
 }
+// First-letter drop cap — akshara-aware (handles Kannada conjuncts & vowel signs)
+(function(){
+  var el=document.querySelector('.blocks .b-txt');
+  if(!el||el.querySelector('.fl'))return;
+  var zw=[0x200B,0x200C,0x200D,0xFEFF];
+  function combine(c){return c>=0x0CBC&&c<=0x0CCC||c>=0x0CE2&&c<=0x0CE3||c===0x200C||c===0x200D}
+  function endAkshara(t,i){
+    var e=i+1;
+    while(e<t.length){
+      var c=t.charCodeAt(e);
+      if(combine(c)){e++;continue}
+      if(c===0x0CCD){
+        e++;
+        if(e<t.length&&t.charCodeAt(e)>=0x0C95&&t.charCodeAt(e)<=0x0CB9){e++;continue}
+        break;
+      }
+      break;
+    }
+    return e;
+  }
+  function walk(n){
+    if(n.nodeType===3){
+      var t=n.textContent;
+      for(var i=0;i<t.length;i++){
+        var c=t.charCodeAt(i);
+        if(c>32&&zw.indexOf(c)===-1) return {node:n,s:i,e:endAkshara(t,i)};
+      }
+      return null;
+    }
+    if(n.nodeType===1){for(var i=0;i<n.childNodes.length;i++){var r=walk(n.childNodes[i]);if(r)return r}}
+    return null;
+  }
+  var r=walk(el);
+  if(!r)return;
+  var n=r.node,t=n.textContent,s=r.s,e=r.e;
+  if(s>=e)return;
+  var sp=document.createElement('span');sp.className='fl';sp.textContent=t.slice(s,e);
+  var f=document.createDocumentFragment();
+  if(s>0)f.appendChild(document.createTextNode(t.slice(0,s)));
+  f.appendChild(sp);
+  if(e<t.length)f.appendChild(document.createTextNode(t.slice(e)));
+  n.parentNode.replaceChild(f,n);
+})();
+
 </script>
 {% endblock %}
