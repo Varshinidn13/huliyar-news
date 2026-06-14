@@ -260,8 +260,10 @@ document.addEventListener('paste',function(e){
   var ed=e.target.closest('.editor-editable');
   if(!ed)return;
   e.preventDefault();
-  var text=(e.clipboardData||window.clipboardData).getData('text/plain');
-  if(text)document.execCommand('insertText',false,text);
+  try{
+    var text=(e.clipboardData||window.clipboardData).getData('text/plain');
+    if(text)document.execCommand('insertText',false,text);
+  }catch(ex){}
 });
 
 function applyFormat(format,value){
@@ -335,7 +337,11 @@ document.getElementById('editForm').onsubmit=function(){
   var eds=document.querySelectorAll('.editor-editable');
   for(var i=0;i<eds.length;i++){
     var id=eds[i].id.replace('ed_','');
-    document.getElementById('hd_'+id).value=cleanContent(eds[i].innerHTML);
+    try{
+      document.getElementById('hd_'+id).value=cleanContent(eds[i].innerHTML);
+    }catch(e){
+      document.getElementById('hd_'+id).value=eds[i].innerHTML;
+    }
   }
 };
 </script>
