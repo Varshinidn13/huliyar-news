@@ -18,7 +18,7 @@ app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024
 
 EDITOR_PHONE    = '9448760070'
 EDITOR_PASSWORD = 'varsh123'
-CATEGORIES = ['ಸ್ಥಳೀಯ','ರಾಜಕೀಯ','ರೈತ ಸುದ್ದಿ','ಶಿಕ್ಷಣ','ಕ್ರೀಡೆ','ಧಾರ್ಮಿಕ','ವಾಣಿಜ್ಯ','ತಾಲ್ಲೂಕಿನ ಸುದ್ದಿ','ಅಪರಾಧ']
+CATEGORIES = ['ಸ್ಥಳೀಯ','ರಾಜಕೀಯ','ಪಂಚಾಯಿತಿ ತರಬೇತಿ','ಜಿಲ್ಲಾ/ ರಾಜ್ಯ','ಜಾಹೀರಾತು','ರೈತ/ ಕೃಷಿ','ಶಿಕ್ಷಣ','ಕ್ರೀಡೆ','ಧಾರ್ಮಿಕ /ದೇವಾಲಯ','ವಾಣಿಜ್ಯ','ತಾಲ್ಲೂಕಿನ ಸುದ್ದಿ','ಅಪರಾಧ /ಪೊಲೀಸ್']
 SITE_URL  = 'https://huliyarbabunews.pythonanywhere.com'
 SITE_NAME = 'ಹುಳಿಯಾರು ಸುದ್ದಿ ಸಮಾಚಾರ'
 
@@ -75,14 +75,19 @@ def init_db():
                 conn.execute('INSERT INTO content_blocks (news_id,position,type,content) VALUES (?,0,?,?)',
                              (r['id'],'text',r['content']))
         conn.commit()
+    # migrate: add caption column
+    cols = [r[1] for r in conn.execute("PRAGMA table_info(content_blocks)").fetchall()]
+    if 'caption' not in cols:
+        conn.execute("ALTER TABLE content_blocks ADD COLUMN caption TEXT DEFAULT ''")
+        conn.commit()
     # seed
     if conn.execute('SELECT COUNT(*) FROM news').fetchone()[0] == 0:
         seeds = [
             ('ಅಶಕ್ತರಿಗೆ ಆಸರೆಯಾದ ಧರ್ಮಸ್ಥಳ ಯೋಜನೆ: ವೀಲ್ ಚೇರ್ ವಿತರಣೆ','ಸ್ಥಳೀಯ',None,139,'31-03-2026 09:12 AM',0,'ಧರ್ಮಸ್ಥಳ ಯೋಜನೆಯಡಿ ಅಶಕ್ತ ಫಲಾನುಭವಿಗಳಿಗೆ ವೀಲ್ ಚೇರ್ ವಿತರಿಸಲಾಯಿತು.'),
-            ('ಗಾಂಧಿ ಪೇಟೆಯಲ್ಲಿ ಮನೆ ಕಳ್ಳತನ','ಅಪರಾಧ',None,357,'25-03-2026 06:56 PM',1,'ಗಾಂಧಿ ಪೇಟೆಯಲ್ಲಿ ಕಳ್ಳತನ ಪ್ರಕರಣ. ಪೊಲೀಸರು ತನಿಖೆ ಆರಂಭಿಸಿದ್ದಾರೆ.'),
-            ('26 ವರ್ಷಗಳ ಬಳಿಕ ತರಬೇನಹಳ್ಳಿ ಹಾಲು ಉತ್ಪಾದಕರ ಸಂಘಕ್ಕೆ ಚುನಾವಣೆ','ರೈತ ಸುದ್ದಿ',None,274,'21-03-2026 04:49 PM',0,'26 ವರ್ಷಗಳ ನಂತರ ಚುನಾವಣೆ ನಡೆದು ಹೊಸ ಆಡಳಿತ ಮಂಡಳಿ ಆಯ್ಕೆ ಆಗಿದೆ.'),
-            ('ಶ್ರೀ ದುರ್ಗಾಪರಮೇಶ್ವರಿ ಅಮ್ಮನವರ 54ನೇ ಜಾತ್ರಾ ಮಹೋತ್ಸವ','ಧಾರ್ಮಿಕ',None,168,'24-03-2026 10:24 AM',0,'ಹುಳಿಯಾರಿನಲ್ಲಿ ಜಾತ್ರಾ ಮಹೋತ್ಸವ ಭವ್ಯವಾಗಿ ಜರುಗಿತು.'),
-            ('ನಕಲಿ ಚಿನ್ನ ಮಾರಾಟ ಜಾಲ ಬಹಿರಂಗ: ಮೂವರು ಬಂಧನ','ಅಪರಾಧ',None,412,'05-04-2026 11:30 AM',1,'ನಕಲಿ ಚಿನ್ನ ಮಾರಾಟ ಜಾಲ ಬಹಿರಂಗ. ಪೊಲೀಸರು ಮೂವರನ್ನು ಬಂಧಿಸಿದ್ದಾರೆ.'),
+            ('ಗಾಂಧಿ ಪೇಟೆಯಲ್ಲಿ ಮನೆ ಕಳ್ಳತನ','ಅಪರಾಧ /ಪೊಲೀಸ್',None,357,'25-03-2026 06:56 PM',1,'ಗಾಂಧಿ ಪೇಟೆಯಲ್ಲಿ ಕಳ್ಳತನ ಪ್ರಕರಣ. ಪೊಲೀಸರು ತನಿಖೆ ಆರಂಭಿಸಿದ್ದಾರೆ.'),
+            ('26 ವರ್ಷಗಳ ಬಳಿಕ ತರಬೇನಹಳ್ಳಿ ಹಾಲು ಉತ್ಪಾದಕರ ಸಂಘಕ್ಕೆ ಚುನಾವಣೆ','ರೈತ/ ಕೃಷಿ',None,274,'21-03-2026 04:49 PM',0,'26 ವರ್ಷಗಳ ನಂತರ ಚುನಾವಣೆ ನಡೆದು ಹೊಸ ಆಡಳಿತ ಮಂಡಳಿ ಆಯ್ಕೆ ಆಗಿದೆ.'),
+            ('ಶ್ರೀ ದುರ್ಗಾಪರಮೇಶ್ವರಿ ಅಮ್ಮನವರ 54ನೇ ಜಾತ್ರಾ ಮಹೋತ್ಸವ','ಧಾರ್ಮಿಕ /ದೇವಾಲಯ',None,168,'24-03-2026 10:24 AM',0,'ಹುಳಿಯಾರಿನಲ್ಲಿ ಜಾತ್ರಾ ಮಹೋತ್ಸವ ಭವ್ಯವಾಗಿ ಜರುಗಿತು.'),
+            ('ನಕಲಿ ಚಿನ್ನ ಮಾರಾಟ ಜಾಲ ಬಹಿರಂಗ: ಮೂವರು ಬಂಧನ','ಅಪರಾಧ /ಪೊಲೀಸ್',None,412,'05-04-2026 11:30 AM',1,'ನಕಲಿ ಚಿನ್ನ ಮಾರಾಟ ಜಾಲ ಬಹಿರಂಗ. ಪೊಲೀಸರು ಮೂವರನ್ನು ಬಂಧಿಸಿದ್ದಾರೆ.'),
         ]
         for s in seeds:
             conn.execute('INSERT INTO news (title,category,image,views,created_at,breaking_news) VALUES (?,?,?,?,?,?)', s[:6])
@@ -96,8 +101,9 @@ def save_blocks(conn, nid, form, files):
     position = 0
     idx = 0
     while True:
-        text_key  = 'content_{}'.format(idx)
-        image_key = 'block_image_{}'.format(idx)
+        text_key   = 'content_{}'.format(idx)
+        image_key  = 'block_image_{}'.format(idx)
+        caption_key = 'caption_{}'.format(idx)
         has_text  = text_key in form
         has_image = image_key in files
         if not has_text and not has_image:
@@ -113,10 +119,17 @@ def save_blocks(conn, nid, form, files):
             if imgf and imgf.filename and allowed_file(imgf.filename):
                 fname = uuid.uuid4().hex + '.jpg'
                 save_compressed_image(imgf, UPLOAD_DIR, fname)
-                conn.execute('INSERT INTO content_blocks (news_id,position,type,content) VALUES (?,?,?,?)',
-                             (nid, position, 'image', fname))
+                caption = form.get(caption_key, '').strip()
+                conn.execute('INSERT INTO content_blocks (news_id,position,type,content,caption) VALUES (?,?,?,?,?)',
+                             (nid, position, 'image', fname, caption))
                 position += 1
         idx += 1
+
+def media_url(filename):
+    if filename:
+        return url_for('static', filename='uploads/' + filename)
+    return url_for('static', filename='logo.png')
+app.jinja_env.globals['media_url'] = media_url
 
 # ── ROUTES ──────────────────────────────────────────────────────────────────
 
@@ -254,8 +267,9 @@ def editor_edit(nid):
         position = 0
         idx = 0
         while True:
-            text_key  = 'content_{}'.format(idx)
-            image_key = 'block_image_{}'.format(idx)
+            text_key    = 'content_{}'.format(idx)
+            image_key   = 'block_image_{}'.format(idx)
+            caption_key = 'caption_{}'.format(idx)
             # Check if this block index exists in the submitted form
             if text_key not in request.form and image_key not in request.files:
                 # Also check if it was an existing block that might only have an image
@@ -264,6 +278,7 @@ def editor_edit(nid):
             
             txt = request.form.get(text_key, '').strip()
             imgf = request.files.get(image_key)
+            caption = request.form.get(caption_key, '').strip()
             
             # Logic for image:
             # 1. New file uploaded -> save it
@@ -276,6 +291,9 @@ def editor_edit(nid):
                 save_compressed_image(imgf, UPLOAD_DIR, saved_image)
             elif idx < len(existing_blocks) and existing_blocks[idx]['type'] == 'image':
                 saved_image = existing_blocks[idx]['content']
+                # Preserve existing caption if no new caption submitted
+                if not caption:
+                    caption = existing_blocks[idx]['caption'] or ''
 
             if txt:
                 conn.execute('INSERT INTO content_blocks (news_id,position,type,content) VALUES (?,?,?,?)',
@@ -283,8 +301,8 @@ def editor_edit(nid):
                 position += 1
             
             if saved_image:
-                conn.execute('INSERT INTO content_blocks (news_id,position,type,content) VALUES (?,?,?,?)',
-                             (nid, position, 'image', saved_image))
+                conn.execute('INSERT INTO content_blocks (news_id,position,type,content,caption) VALUES (?,?,?,?,?)',
+                             (nid, position, 'image', saved_image, caption))
                 position += 1
                 
             idx += 1
